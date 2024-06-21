@@ -16,6 +16,14 @@ urlpatterns = [
     #path('investor_sign_up',investorSignUp,name='investor_sign_up'),
     #path('ca_firm_sign_up',caFirmSignUp,name='ca_firm_sign_up'),
 
+    #Super Admin
+    path('super_admin_dashboard',superAdminDashboard,name='super_admin_dashboard'),
+    path('admins',admins,name='admins'),
+    path('editors',editors,name='editors'),
+    path('users',users,name='users'),
+
+
+
 
     #Admin
     path('admin_dashboard',adminDashboard,name='admin_dashboard'),

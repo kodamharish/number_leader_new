@@ -69,6 +69,8 @@ def login(request):
                 request.session['current_user_id'] = user.user_id
                 if user.user_type == 'admin':
                     return redirect('admin_dashboard')
+                if user.user_type == 'super_admin':
+                    return redirect('super_admin_dashboard')
                 # elif user.user_type == 'editor':
                 #     return redirect('editor_dashboard')
                 # elif user.user_type == 'user':
@@ -188,6 +190,35 @@ def signup(request):
            
     else:
         return render(request, 'sign_up_new.html')
+
+
+
+
+
+#Super Admin
+def superAdminDashboard(request):
+    users = User.objects.all()
+    context = {'users':users}
+
+    return render(request,'super_admin/dashboard.html',context)
+
+def admins(request):
+    admins = User.objects.all()
+    context = {'admins':admins}
+
+    return render(request,'super_admin/admins.html',context)
+
+def editors(request):
+    editors = Team.objects.filter(user_type='editor')
+    context = {'editors':editors}
+
+    return render(request,'super_admin/editors.html',context)
+
+def users(request):
+    users = Team.objects.filter(user_type='user')
+    context = {'users':users}
+
+    return render(request,'super_admin/users.html',context)
 
 
 

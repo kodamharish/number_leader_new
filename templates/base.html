@@ -48,26 +48,45 @@
           </li>
           {% endif %}
 
+
           {% if current_user or current_subuser %}
+
+          {% if current_user.user_type == 'super_admin' %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'super_admin_dashboard' %}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admins' %}">Admins</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'editors' %}">Editors</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users' %}">Users</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'super_admin_dashboard' %}">Company</a>
+          </li>
+          {% endif %}
+
+          <!-- Admin -->
           {% if current_user.user_type == 'admin' %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_company'%}">My Company</a>
-          </li> -->
-
-          
 
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="myCompanyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="myCompanyDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
               My Company
             </a>
             <ul class="dropdown-menu" aria-labelledby="myCompanyDropdown">
               {% if current_user_companies %}
-                {% for company in current_user_companies %}
-                  <li><a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}" data-company-name="{{ company.company_name }}">{{ company.company_name }}</a></li>
-                {% endfor %}
+              {% for company in current_user_companies %}
+              <li><a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
+                  data-company-name="{{ company.company_name }}">{{ company.company_name }}</a></li>
+              {% endfor %}
               {% endif %}
             </ul>
           </li>
@@ -77,9 +96,6 @@
           <li class="nav-item">
             <a class="nav-link" href="#">CA Firms</a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_team' %}">My Team</a>
-          </li> -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
             <ul class="dropdown-menu">
@@ -91,12 +107,29 @@
 
 
           {% endif %}
+          <!-- Admin -->
 
+
+          <!-- Editor -->
 
           {% if current_subuser.user_type == 'editor' %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'editor_dashboard' %}">Editor</a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="myCompanyDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              My Company
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="myCompanyDropdown">
+              {% if current_user_companies %}
+              {% for company in current_user_companies %}
+              <li><a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
+                  data-company-name="{{ company.company_name }}">{{ company.company_name }}</a></li>
+              {% endfor %}
+              {% endif %}
+            </ul>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Investor</a>
           </li>
@@ -112,16 +145,18 @@
             </ul>
           </li>
           {% endif %}
+
+          <!-- Editor -->
+
+          <!-- User -->
           {% if current_subuser.user_type == 'user' %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'user_dashboard'%}">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Investor</a>
+            <a class="nav-link" href="#">User</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">CA Firms</a>
-          </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
             <ul class="dropdown-menu">
@@ -131,6 +166,9 @@
             </ul>
           </li>
           {% endif %}
+
+          <!-- User -->
+
           <li class="nav-item">
             <a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a>
           </li>
@@ -141,7 +179,7 @@
         <a class="navbar-brand" href="#">
           <img src="{% static 'images/img_avatar.png' %}" alt="logo" style="width:40px;" class="rounded-pill">
         </a>
-        <p class="text-danger">
+        <p class="text-success">
           Username : <b>{% if current_user %}
             {{ current_user.username}}
             ({{current_user.user_type}})
@@ -153,9 +191,11 @@
           </b> <br>
           User ID : <b>{% if current_user %}
             {{ current_user.user_id}}
+            ({{current_user.role}})
             {% endif %}
             {% if current_subuser %}
             {{ current_subuser.subuser_id}}
+            ({{current_user.role}})
             {% endif %}
           </b> <br>
 
@@ -183,7 +223,7 @@
       }
 
       $('.dropdown-menu a.company-select').click(function (e) {
-        e.preventDefault(); 
+        e.preventDefault();
         var selectedCompanyName = $(this).data('company-name');
         var selectedCompanyId = $(this).data('company-id');
         localStorage.setItem('selectedCompanyName', selectedCompanyName);
@@ -195,6 +235,14 @@
       });
     });
   </script>
+
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+    </script>
+    
 
 </body>
 

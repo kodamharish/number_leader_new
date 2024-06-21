@@ -24,9 +24,15 @@ def custom_subuser(request):
 def getAllCompanies(request):
     user_context = custom_user(request)
     current_user = user_context.get('current_user')
+
+    subuser_context = custom_subuser(request)
+    current_subuser = subuser_context.get('current_subuser')
     
     if current_user:
         current_user_companies = Company.objects.filter(user_id=current_user.user_id)
+        return {'current_user_companies':current_user_companies}
+    if current_subuser:
+        current_user_companies = Company.objects.filter(company_id=current_subuser.company_id)
         return {'current_user_companies':current_user_companies}
     else:
         return {'current_user_companies':None}
