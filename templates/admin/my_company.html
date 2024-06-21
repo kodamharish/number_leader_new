@@ -1,0 +1,62 @@
+{% extends '../base.html' %} {% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Add Company</h4>
+            {% for msg in messages %}
+            <p class="text-danger mt-2 fw-bold text-center">{{msg}}</p>
+            {% endfor %}
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control w-50" name="username" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control w-50" name="email" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="number" class="form-control w-50" name="phone_number" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="company">Company</label>
+                    <select class="form-select w-50"  id="company" name="company">
+                        <option>Company X</option>
+                        <option>Comapny Y</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="firstname">Full Name</label>
+                    <input type="text" class="form-control w-50" name="firstname" required>
+                </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control w-50" name="password" required>
+                </div>
+                <div class="mb-3 inline">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" class="form-control w-50" name="confirm_password" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="company">Role</label>
+                    <select class="form-select w-50"  id="company" name="company">
+                        <option>Editor</option>
+                        <option>User</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="text-center mt-5 mb-3">
+            <button type="submit" class="btn btn-secondary border-radius pl pr mb-3" style="width:15%">Submit</button>
+        </div>
+
+    </form>
+</div>
+{% endblock content %}
