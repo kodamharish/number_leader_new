@@ -27,7 +27,7 @@ class User(models.Model):
     lastname = models.CharField(max_length=50,null=True)
     password = models.CharField(max_length=10,null=False)  
     user_type = models.CharField(max_length=12,default='admin')
-    role = models.CharField(max_length=20)
+    company_type = models.CharField(max_length=20)
     
      
 
@@ -73,17 +73,21 @@ class Company(models.Model):
 class CompanyProfile(models.Model):
     company_id = models.ForeignKey(Company,on_delete=models.CASCADE)
     excecutive_summary = models.TextField()
+    technology_profile=models.TextField(null=True)
     type_of_industry = models.CharField(max_length=50)
     no_of_employees = models.IntegerField()
-    product_list = models.CharField(max_length=100)
     ceo = models.CharField(max_length=100)
     cfo = models.CharField(max_length=100)
     cmo = models.CharField(max_length=100)
     vp = models.CharField(max_length=100)
 
-class IndustryNews(models.Model):
+class Product(models.Model):
+    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
+    product_name=models.CharField(max_length=250, null=True)
+
+class NewsOfIndustry(models.Model):
     pass
-class InvestmentNews(models.Model):
+class NewsOfInvestment(models.Model):
     pass
 
 

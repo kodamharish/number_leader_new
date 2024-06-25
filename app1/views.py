@@ -19,6 +19,9 @@ def about(request):
 def sign_up_new(request):
     return render(request,'sign_up_new.html')
 
+
+def login_new(request):
+    return render(request,'login_new.html')
 #Login and Logout
 # def login(request):
 #     if request.method == 'POST':
@@ -118,7 +121,7 @@ def signup(request):
         company_website_url = request.POST.get('company_website_url')
         company_linkedin_url = request.POST.get('company_linkedin_url')
         subscription_type = request.POST.get('subscription_type')
-        role = request.POST.get('company_type')
+        company_type = request.POST.get('company_type')
 
 
         
@@ -151,7 +154,7 @@ def signup(request):
             firstname=firstname,
             lastname=lastname,
             password=password,
-            role = role
+            company_type = company_type
         )
         
         user.save()
@@ -197,10 +200,46 @@ def signup(request):
 
 #Super Admin
 def superAdminDashboard(request):
-    users = User.objects.all()
-    context = {'users':users}
+    admins_count = User.objects.count()
+    editors_count = Team.objects.filter(user_type='editor').count()
+    users_count = Team.objects.filter(user_type='user').count()
+
+    startups = User.objects.filter(company_type='Startup').count()
+    investors= User.objects.filter(company_type='Investor').count()
+    ca_firms= User.objects.filter(company_type='CA_firm').count()
+    companys = Company.objects.count()
+    context = {
+        'admins_count': admins_count,
+        'editors_count': editors_count,
+        'users_count': users_count,
+        'startups':startups,
+        'investors':investors,
+        'ca_firms':ca_firms,
+        'companys':companys
+    }
 
     return render(request,'super_admin/dashboard.html',context)
+
+
+def startups(request):
+    startups = User.objects.filter(company_type='Startup').all()
+    context = {'startups':startups}
+    return render(request,'super_admin/startups.html',context)
+
+def investors(request):
+    investors= User.objects.filter(company_type='Investor').all()
+    context = {'investors':investors}
+    return render(request,'super_admin/investors.html',context)
+
+def ca_firms(request):
+    ca_firms= User.objects.filter(company_type='CA_firm').all()
+    context = {'ca_firms':ca_firms}
+    return render(request,'super_admin/ca_firms.html',context)
+
+def companies(request):
+    companies = Company.objects.all()
+    context ={'companies':companies}
+    return render(request,'super_admin/companies.html',context)
 
 def admins(request):
     admins = User.objects.all()
@@ -406,15 +445,161 @@ def deleteTeam(request,id):
 def adminDashboard(request):
     return render(request,'admin/dashboard.html')
 
-def myCompany(request):
-    return render(request,'admin/my_company.html')
+def addCompany(request):
+    if request.method == 'POST':
+        # Company Details
+        user_id = request.POST.get('user_id')
+        company_name = request.POST.get('company_name')
+        company_email = request.POST.get('company_email')
+        company_website_url = request.POST.get('company_website_url')
+        company_linkedin_url = request.POST.get('company_linkedin_url')
+        subscription_type = request.POST.get('subscription_type') 
+        # Founders Details
+        founder_name = request.POST.get('founder_name')
+        founder_email = request.POST.get('founder_email')
+        founder_linkedin_url = request.POST.get('founder_linkedin_url')
+        founder_phone_number = request.POST.get('founder_phone_number')
+        user_context = custom_user(request)
+        current_user = user_context.get('current_user')  
+
+        # Company profile
+        excecutive_summary = request.POST.get('excecutive_summary')
+        technology_profile = request.POST.get('technology_profile')
+        type_of_industry = request.POST.get('type_of_industry')
+        no_of_employees = request.POST.get('no_of_employees')
+        ceo = request.POST.get('ceo')
+        cfo = request.POST.get('cfo')
+        cmo = request.POST.get('cmo')
+        vp = request.POST.get('vp')
+
+        # Products
+        product_name = request.POST.get('product_name')
+
+        # Fetch the User instance for the creator_id
+        #creator_user = User.objects.get(user_id=current_user.user_id)
+
+        # Create the Company instance
+        company = Company(
+                user_id=current_user,  # This should match the foreign key field in Company model
+                company_name=company_name,
+                company_email=company_email,
+                company_website_url=company_website_url,
+                company_linkedin_url=company_linkedin_url,
+                subscription_type=subscription_type,
+                founder_name=founder_name,
+                founder_email=founder_email,
+                founder_linkedin_url=founder_linkedin_url,
+                founder_phone_number=founder_phone_number,
+            )
+        company.save()
+
+        # Create the CompanyProfile instance and associate it with the Company instance
+        company_profile = CompanyProfile(
+            company_id=company,  # Associate with the newly created Company instancec
+            excecutive_summary=excecutive_summary,
+            technology_profile=technology_profile,
+            type_of_industry=type_of_industry,
+            no_of_employees=no_of_employees,
+            ceo=ceo,
+            cfo=cfo,
+            cmo=cmo,
+            vp=vp
+        )
+        company_profile.save()
+
+        products = Product(
+            company_id=company,
+            product_name = product_name
+        )
+        products.save()
+        messages.success(request, 'Data saved Successfully')
+        return redirect('add_company')
+    else:
+        return render(request, 'admin/add_company.html')
+
+
+
+def updateCompany(request, company_id):
+    if request.method == 'POST':
+        # Fetch existing company and profile
+        company = get_object_or_404(Company, company_id=company_id)
+        company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
+        products = get_object_or_404(Product, company_id=company_id)
+
+        
+        # Company Details
+        company.company_name = request.POST.get('company_name')
+        company.company_email = request.POST.get('company_email')
+        company.company_website_url = request.POST.get('company_website_url')
+        company.company_linkedin_url = request.POST.get('company_linkedin_url')
+        company.subscription_type = request.POST.get('subscription_type')
+        
+        # Founders Details
+        company.founder_name = request.POST.get('founder_name')
+        company.founder_email = request.POST.get('founder_email')
+        company.founder_linkedin_url = request.POST.get('founder_linkedin_url')
+        company.founder_phone_number = request.POST.get('founder_phone_number')
+        
+        # Company profile
+        company_profile.excecutive_summary = request.POST.get('excecutive_summary')
+        company_profile.technology_profile = request.POST.get('technology_profile')
+        company_profile.type_of_industry = request.POST.get('type_of_industry')
+        company_profile.no_of_employees = request.POST.get('no_of_employees')
+        company_profile.ceo = request.POST.get('ceo')
+        company_profile.cfo = request.POST.get('cfo')
+        company_profile.cmo = request.POST.get('cmo')
+        company_profile.vp = request.POST.get('vp')
+
+        # Products
+        products.product_name = request.POST.get('product_name')
+        
+        # Save the updates
+        company.save()
+        company_profile.save()
+        products.save()
+
+        messages.success(request, 'Data updated successfully')
+        return redirect('update_company', company_id=company_id)
+    else:
+        # Fetch existing company and profile for initial form rendering
+        company = get_object_or_404(Company, company_id=company_id)
+        company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
+        products = get_object_or_404(Product, company_id=company_id)
+
+        
+        context = {
+            'company': company,
+            'company_profile': company_profile,
+            'products':products
+        }
+        
+        return render(request, 'admin/update_company.html', context)
+
+# def companyProfile(request, id):
+#     cmp=Company.objects.get(company_id=id)
+#     context={
+#         'Company':cmp
+#     }
+#     return render(request,'admin/company_profile.html',context)
 
 def companyProfile(request, id):
-    cmp=Company.objects.get(company_id=id)
-    context={
-        'Company':cmp
+    company = get_object_or_404(Company, company_id=id)
+    company_profile = get_object_or_404(CompanyProfile, company_id=id)
+    products = Product.objects.filter(company_id=id) 
+    context = {
+        'company': company,
+        'company_profile': company_profile,
+        'Products':products
     }
-    return render(request,'admin/company_profile.html',context)
+    return render(request, 'admin/company_profile.html',context)
+
+
+
+def comprehensiveProfile(request):
+    company_profile = CompanyProfile.objects.first()
+    products = Product.objects.all()
+    context ={'company_profile': company_profile, 'products': products}
+    return render(request, 'admin/comprehensive.html', context)
 
 #Editor
 def editorDashboard(request):

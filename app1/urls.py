@@ -6,6 +6,9 @@ urlpatterns = [
     path('',home,name='home'),
     path('home',home,name='home'),
     path('about',about,name='about'),
+    path('login_new',login_new,name='login_new'),
+
+    
 
     #login,logout
     path('login',login,name='login'),
@@ -21,13 +24,20 @@ urlpatterns = [
     path('admins',admins,name='admins'),
     path('editors',editors,name='editors'),
     path('users',users,name='users'),
-
-
+    path('startups',startups,name='startups'),
+    path('investors',investors,name='investors'),
+    path('ca_firms',ca_firms,name='ca_firms'),
+    path('companies',companies,name='companies'),
 
 
     #Admin
     path('admin_dashboard',adminDashboard,name='admin_dashboard'),
-    path('my_company',myCompany,name='my_company'), 
+    #company
+    path('add_company',addCompany,name='add_company'), 
+    path('update_company/<str:company_id>/', updateCompany, name='update_company'),
+    path('comprehensive_profile', comprehensiveProfile, name='comprehensive_profile'),
+    path('company_profile/<str:id>/',companyProfile,name='company_profile'),
+
     #children
     path('my_team',myTeam,name='my_team'),
     path('add_team',addTeam,name='add_team'),
@@ -35,11 +45,6 @@ urlpatterns = [
     path('delete_team/<str:id>',deleteTeam,name='delete_team'),
 
     path('parent',parent,name='parent'),
-
-
-    
-    path('company_profile/<str:id>/',companyProfile,name='company_profile'),
-    
     #editor
     path('editor_dashboard',editorDashboard,name='editor_dashboard'),
     #user

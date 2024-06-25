@@ -1,0 +1,133 @@
+{% extends '../base.html' %} {% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Update Company</h4>
+            {% for msg in messages %}
+            <p class="text-danger mt-2 fw-bold text-center">{{msg}}</p>
+            {% endfor %}
+
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="user_id">User ID</label>
+                    <input type="text" class="form-control w-50" name="user_id" value="{{current_user.user_id}}" readonly  required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="company_name">Company Name</label>
+                    <input type="text" class="form-control w-50" name="company_name" value="{{ company.company_name }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="company_email">Email</label>
+                    <input type="email" class="form-control w-50" name="company_email" value="{{ company.company_email }}" required>
+                </div> 
+                
+                
+            </div>  
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="company_website_url">Website URL</label>
+                    <input type="url" class="form-control w-50" name="company_website_url" value="{{ company.company_website_url }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="company_linkedin_url">Linkedin URL</label>
+                    <input type="url" class="form-control w-50" name="company_linkedin_url" value="{{ company.company_linkedin_url }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="subscription_type">Subscription Type</label>
+                    <!-- <select class="form-select w-50"  id="company" name="subscription_type" value="{{ company.subscription_type }}" required>
+                        <option value="basic">Basic</option>
+                        <option value="premium">Premium</option>
+                        <option value="advance">Advance</option>
+                    </select> -->
+                    <input type="text" id="subscription_type" name="subscription_type" value="{{ company.subscription_type }}" required>
+                </div>
+                
+            </div>
+            
+        </div>
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Founder Details</h4>
+            <div class="col-md-6">  
+                
+                <div class="mb-3 mt-3 inline">
+                    <label for="founder_name">Name</label>
+                    <input type="text" class="form-control w-50" name="founder_name" value="{{ company.founder_name }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="founder_email">Email</label>
+                    <input type="email" class="form-control w-50" name="founder_email" value="{{ company.founder_email }}" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="founder_linkedin_url">Linkedin URL</label>
+                    <input type="url" class="form-control w-50" name="founder_linkedin_url" value="{{ company.founder_linkedin_url }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="founder_phone_number">Phone Number</label>
+                    <input type="number" class="form-control w-50" name="founder_phone_number" value="{{ company.founder_phone_number }}" required>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Company Profile</h4>
+            <div class="col-md-6">  
+                
+                <div class="mb-3 mt-3 inline">
+                    <label for="excecutive_summary">Excecutive Summary</label>
+                    <!-- <textarea class="form-control w-50" rows="6"  name="excecutive_summary" required></textarea> -->
+                    <textarea id="excecutive_summary" class="form-control w-50" rows="6" name="excecutive_summary">{{ company_profile.excecutive_summary }}</textarea>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="technology_profile">Technology Profile</label>
+                    <!-- <textarea class="form-control w-50" rows="6"  name="technology_profile" required></textarea> -->
+                    <textarea id="technology_profile" class="form-control w-50" rows="6" name="technology_profile">{{ company_profile.technology_profile }}</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="type_of_industry">Type of Industry</label>
+                    <input type="text" class="form-control w-50" name="type_of_industry" value="{{ company_profile.type_of_industry }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="no_of_employees">no_of_employees</label>
+                    <input type="number" class="form-control w-50" name="no_of_employees" value="{{ company_profile.no_of_employees }}" required>
+                </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="ceo">CEO</label>
+                    <input type="text" class="form-control w-50" name="ceo" value="{{ company_profile.ceo }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="cfo">CFO</label>
+                    <input type="text" class="form-control w-50" name="cfo" value="{{ company_profile.cfo }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="cmo">CMO</label>
+                    <input type="text" class="form-control w-50" name="cmo" value="{{ company_profile.cmo }}" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="vp">VP</label>
+                    <input type="text" class="form-control w-50" name="vp" value="{{ company_profile.vp }}" required>
+                </div>
+
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="product_name">Products</label>
+                    <input type="text" class="form-control w-50" name="product_name" value="{{ products.product_name }}" required>
+                </div>
+            </div>
+            
+        </div>
+        
+       
+        
+        <div class="text-center mt-5 mb-3">
+            <button type="submit" class="btn btn-secondary border-radius pl pr mb-3">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

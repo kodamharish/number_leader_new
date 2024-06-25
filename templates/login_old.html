@@ -1,0 +1,62 @@
+{% extends './base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <h4 class="text-center mb-3">Sign In</h4>
+      <div class="card shadow">
+        <div class="card-body text-center">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3 mt-5 inline">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" name="username" required>
+            </div>
+            <div class="mb-4 position-relative inline">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+              <span toggle="#password"
+                class="fa fa-fw fa-eye field-icon toggle-password position-absolute top-50 end-0 translate-middle-y pe-3"
+                style="cursor: pointer;margin-right:5px;">
+              </span>
+            </div>
+            <div class="mb-4 mt-2" style="text-align:right">
+              <a href="{% url 'forgot_password_1' %}">Forgot Password</a>
+            </div>
+            <button type="submit" class="btn btn-secondary border-radius pl pr w-50 mb-3">Login</button>
+          </form>
+
+          <button type="button" class="btn btn-secondary border-radius pl pr w-50 mb-3">
+            <a class="text-white" href="{% url 'sign_up' %}">
+              Sign Up
+            </a>
+          </button>
+
+          {% for msg in messages %}
+          <p class="text-danger text-center mt-2 fw-bold">{{msg}}</p>
+          {% endfor %}
+          <div class="mt-4">
+            <button class="btn btn-outline-dark w-100 mb-3 border-radius">
+              <i class="fab fa-google me-2"></i> Login with Google
+            </button>
+            <button class="btn btn-outline-dark w-100 border-radius">
+              <i class="fab fa-facebook-f me-2"></i> Login with Facebook
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+</div>
+<script>
+  document.querySelector(".toggle-password").addEventListener("click", function () {
+    var passwordField = document.getElementById("password");
+    var type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+    passwordField.setAttribute("type", type);
+    this.classList.toggle("fa-eye");
+    this.classList.toggle("fa-eye-slash");
+  });
+</script>
+{% endblock content %}

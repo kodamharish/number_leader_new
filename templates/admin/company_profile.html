@@ -1,4 +1,224 @@
-{% extends '../base.html' %} 
+{% extends '../base.html' %}
+
 {% block content %}
-<h1>{{ Company.company_name }}</h1>
+<style>
+    /* Basic styles for sidebar and dropdown menus */
+    .sidebar {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        height: 100%;
+        width: 270px; /* Slightly wider for better content spacing */
+        background: linear-gradient(145deg, #00b0f0, #005792);
+        overflow-y: auto; /* Enable vertical scroll if content exceeds height */
+        padding-top: 20px;
+        z-index: 1000; /* Ensure sidebar stays above other content */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
+        border-radius: 8px; /* Rounded corners for modern look */
+    }
+
+    .sidebar h2 {
+        padding-left: 20px;
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .sidebar a {
+        padding: 12px 20px;
+        text-decoration: none;
+        font-size: 18px;
+        color: #fff;
+        display: block;
+        transition: background-color 0.3s, color 0.3s;
+        border-radius: 4px; /* Rounded corners for links */
+        margin: 5px 10px; /* Spacing between links */
+    }
+
+    .sidebar a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .dropdown-container {
+        display: none;
+        background-color: rgba(255, 255, 255, 0.1); /* Transparent background for submenus */
+        padding-left: 15px;
+        border-radius: 4px; /* Rounded corners for submenus */
+        margin: 5px 0; /* Spacing between dropdown containers */
+    }
+
+    .dropdown-container a {
+        font-size: 16px;
+        margin: 3px 0; /* Spacing between submenu items */
+    }
+
+    .dropdown-btn {
+        cursor: pointer;
+        outline: none;
+    }
+
+    /* Styles for the card */
+    .info-card {
+        position: absolute;
+        width: 500px;
+        padding: 20px;
+        border: none;
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: none; /* Hidden by default */
+        z-index: 1001; /* Ensure it stays above other content */
+        border-left: 5px solid #00b0f0; /* Matching color border */
+        border-radius: 8px; /* Rounded corners for the card */
+        transition: opacity 0.3s, transform 0.3s; /* Smooth transition for appearance */
+        opacity: 0; /* Initially hidden */
+        transform: translateY(-10px); /* Slide up effect */
+    }
+
+    .info-card.visible {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Neutral position */
+    }
+
+    /* Adjust main content position to avoid overlap */
+    .main-content {
+        margin-left: 290px; /* Adjust according to sidebar width */
+        padding: 40px; /* Reduce padding for a cleaner look */
+        transition: margin-left 0.3s; /* Smooth transition for sidebar width changes */
+    }
+
+    /* General styling for a modern look */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #005792;
+    }
+    .edit-icon {
+        display: none; /* Initially hide edit icon */
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        color: #fff; /* Adjust icon color to match sidebar theme */
+    }
+
+    /* Adjust sidebar anchor tag position to make space for the edit icon */
+    .sidebar a {
+        position: relative;
+    }
+</style>
+
+<div class="sidebar">
+    <h2>Features</h2>
+    <a class="dropdown-btn">PROFILE<span class="edit-icon">&nbsp;&#9998;</span></a>
+    <div class="dropdown-container">
+        <a href="#" data-info="{{ company_profile.excecutive_summary }}">Executive summary</a>
+        <a href="#" data-info="Industry: {{ company_profile.type_of_industry }}<br>No. of Employees: {{ company_profile.no_of_employees }}">Business Profile</a>
+        <a href="#" data-info="{{ company_profile.technology_profile }}">Technology Profile</a>
+        <a href="#" data-info="{% for product in Products %}{{ product.product_name }}<br>{% endfor %}">Product List</a>
+        <a href="#" data-info="CEO: {{ company_profile.ceo }}<br>CFO: {{ company_profile.cfo }}<br>CMO: {{ company_profile.cmo }}<br>VP: {{ company_profile.vp }}">Organization chart</a>
+    </div>
+    <a class="dropdown-btn">CORPORATE FINANCE</a>
+    <div class="dropdown-container">
+        <a href="#" data-info="Planning and Budgeting details...">Planning and Budgeting</a>
+        <a href="#" data-info="Financial Statement details...">Financial Statement</a>
+        <a href="#" data-info="Forecasting details...">Forecasting</a>
+        <a href="#" data-info="Performance Management details...">Performance Management</a>
+        <a href="#" data-info="Business Modelling and Valuation details...">Business Modelling and Valuation</a>
+        <a href="#" data-info="Predictive and Prespective Analysis details...">Predictive and Prespective Analysis</a>
+        <a href="#" data-info="Decision Making Support details...">Decision Making Support</a>
+        <a href="#" data-info="Dashboards & Reporting details...">Dashboards & Reporting</a>
+        <a href="#" data-info="Industry Benchmarking details...">Industry Benchmarking</a>
+    </div>
+    <a class="dropdown-btn">DUE DILIGENCE</a>
+    <div class="dropdown-container">
+        <a href="#" data-info="Compliance Monitoring details...">Compliance Monitoring</a>
+        <a href="#" data-info="Real Time Monitoring details...">Real Time Monitoring</a>
+        <a href="#" data-info="Document Management details...">Document Management</a>
+        <a href="#" data-info="Risk Assessment details...">Risk Assessment</a>
+    </div>
+    <a class="dropdown-btn">FUND RAISING</a>
+    <div class="dropdown-container">
+        <a href="#" data-info="Investor Relations details...">Investor Relations</a>
+        <a href="#" data-info="M&A Matching details...">M&A Matching</a>
+        <a href="#" data-info="Investor Matching details...">Investor Matching</a>
+    </div>
+    <a class="dropdown-btn">INVESTOR TOOL</a>
+    <div class="dropdown-container">
+        <a href="#" data-info="Startup Exchange details...">Startup Exchange</a>
+        <a href="#" data-info="Performance Benchmarking details...">Performance Benchmarking</a>
+        <a href="#" data-info="Startup Matching details...">Startup Matching</a>
+        <a href="#" data-info="Exclusive Insights Preview details...">Exclusive Insights Preview</a>
+        <a href="#" data-info="Syndication & Strategic Partnership details...">Syndication & Strategic Partnership</a>
+        <a href="#" data-info="Investor Dashboards details...">Investor Dashboards</a>
+    </div>
+</div>
+
+<div class="info-card" id="infoCard">
+    <p id="infoContent">Hover over a submenu item to see details here.</p>
+</div>
+
+<script>
+    /* JavaScript for toggling the dropdown menus */
+    document.addEventListener("DOMContentLoaded", function() {
+        var dropdowns = document.getElementsByClassName("dropdown-btn");
+        for (var i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].addEventListener("click", function() {
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                    // Hide edit icon when menu is closed
+                    this.querySelector('.edit-icon').style.display = 'none';
+                } else {
+                    dropdownContent.style.display = "block";
+                    // Show edit icon when menu is opened
+                    this.querySelector('.edit-icon').style.display = 'inline'; // or 'inline-block'
+                }
+            });
+        }
+
+        var submenuItems = document.querySelectorAll('.dropdown-container a');
+        var infoCard = document.getElementById('infoCard');
+        var infoContent = document.getElementById('infoContent');
+        var hideTimeout;
+
+        submenuItems.forEach(function(item) {
+            item.addEventListener('mouseover', function(event) {
+                clearTimeout(hideTimeout); // Clear any existing hide timeout
+                var rect = event.target.getBoundingClientRect();
+                infoContent.innerHTML = this.getAttribute('data-info');
+                infoCard.style.top = rect.top + "px";
+                infoCard.style.left = (rect.right + 10) + "px"; // Position it 10px to the right of the submenu item
+                infoCard.style.display = 'block';
+                infoCard.classList.add('visible'); // Add visible class for transition effect
+            });
+
+            item.addEventListener('mouseout', function() {
+                hideTimeout = setTimeout(function() {
+                    infoCard.classList.remove('visible'); // Remove visible class for transition effect
+                    setTimeout(function() {
+                        infoCard.style.display = 'none';
+                    }, 300); // Wait for transition to complete before hiding
+                }, 100); // Short delay to allow for moving to the info card
+            });
+        });
+
+        infoCard.addEventListener('mouseover', function() {
+            clearTimeout(hideTimeout); // Prevent hiding when hovering over the info card
+        });
+
+        infoCard.addEventListener('mouseout', function() {
+            hideTimeout = setTimeout(function() {
+                infoCard.classList.remove('visible'); // Remove visible class for transition effect
+                setTimeout(function() {
+                    infoCard.style.display = 'none';
+                }, 300); // Wait for transition to complete before hiding
+            }, 100); // Short delay to allow for moving back to the submenu item
+        });
+    });
+</script>
 {% endblock content %}
