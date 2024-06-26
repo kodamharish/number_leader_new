@@ -5,8 +5,8 @@
         {% csrf_token %}
         <div class="row justify-content-center mt-5 mb-5">
             <h4 class="mb-4 text-center"><strong>Sign Up</strong></h4>
-            <div class="card p-4 w-90"> 
-                
+            <div class="card p-4 w-90">
+
                 {% for msg in messages %}
                 <p class="text-danger mt-2 fw-bold text-center">{{ msg }}</p>
                 {% endfor %}
@@ -72,7 +72,7 @@
                         <input type="url" class="form-control" name="company_linkedin_url" required>
                     </div>
 
-                 <div class="mb-3 mt-3">
+                    <div class="mb-3 mt-3">
                         <label for="company_type"><strong>Are you a:</strong></label>
                         <select class="form-control" name="company_type" required>
                             <option value="" disabled selected>Select your option</option>
@@ -115,7 +115,8 @@
             <h4 class="mb-4 text-center"><strong>Subscription Plans</strong></h4>
             <div class="card p-4 w-90 text-center">
                 <div class="d-flex justify-content-between">
-                    <div class="plan-section" id="basic-plan-section" onclick="showPlan('basic-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
+                    <div class="plan-section" id="basic-plan-section"
+                        onclick="showPlan('basic-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
                         <div class="card p-3 plan-tab">
                             <h5>Basic Plan</h5>
                         </div>
@@ -124,7 +125,8 @@
                             <p>Here are the details for the Basic plan...</p>
                         </div>
                     </div>
-                    <div class="plan-section" id="standard-plan-section" onclick="showPlan('standard-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
+                    <div class="plan-section" id="standard-plan-section"
+                        onclick="showPlan('standard-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
                         <div class="card p-3 plan-tab">
                             <h5>Standard Plan</h5>
                         </div>
@@ -133,7 +135,8 @@
                             <p>Here are the details for the Standard plan...</p>
                         </div>
                     </div>
-                    <div class="plan-section" id="premium-plan-section" onclick="showPlan('premium-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
+                    <div class="plan-section" id="premium-plan-section"
+                        onclick="showPlan('premium-plan', 'linear-gradient(to right,  #bcd1e3, #83b4e6)', '#f5f5f5')">
                         <div class="card p-3 plan-tab">
                             <h5>Premium Plan</h5>
                         </div>
@@ -145,7 +148,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="text-center mt-5 mb-3">
             <button type="submit" class="btn btn-secondary border-radius pl pr mb-3" style="width:15%">Submit</button>
         </div>
@@ -156,15 +159,19 @@
     .card {
         border-radius: 10px;
     }
+
     .card {
         border-radius: 10px;
         transition: transform 0.3s ease;
-        overflow: hidden; /* Ensures smooth expansion */
-        transform: scale(1); /* Initial scale */
+        overflow: hidden;
+        /* Ensures smooth expansion */
+        transform: scale(1);
+        /* Initial scale */
     }
 
     .card:hover {
-        transform: scale(1.02); /* Scale up slightly on hover */
+        transform: scale(1.02);
+        /* Scale up slightly on hover */
     }
 
     /* Details container for each section */
@@ -174,15 +181,19 @@
         padding: 10px;
         display: none;
         transition: opacity 0.3s ease, transform 0.3s ease;
-        transform-origin: top; /* Expand from top */
+        transform-origin: top;
+        /* Expand from top */
     }
 
     /* Hover effect for each section */
     .section:hover .details-container {
-        display: block; /* Show details on hover */
+        display: block;
+        /* Show details on hover */
         opacity: 1;
-        transform: scaleY(1); /* Expand vertically */
+        transform: scaleY(1);
+        /* Expand vertically */
     }
+
     .plan-tab {
         cursor: pointer;
         border: 1px solid hsl(0, 0%, 100%);
@@ -191,27 +202,30 @@
         flex: 1;
         text-align: center;
         margin-bottom: 10px;
-        background-color: #ffffff; 
+        background-color: #ffffff;
     }
+
     .plan-tab:hover {
         background-color: #f7f7f7;
         border-color: #fffcfc;
     }
+
     .plan-details-container {
         border: 1px solid #ddd;
         border-radius: 10px;
         padding: 10px;
         display: none;
     }
+
     .plan-section {
-    background-color: #ffffff; 
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    width: 35%; 
-    margin-right: 5px; 
-}
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        width: 35%;
+        margin-right: 5px;
+    }
 </style>
 
 <script>
@@ -241,5 +255,12 @@
         });
     });
 
+</script>
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 </script>
 {% endblock content %}

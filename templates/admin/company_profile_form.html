@@ -1,0 +1,74 @@
+
+
+{% block content %}
+
+
+{% include './company_profile.html' %}
+<div class="container" style="margin-left:270px">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Please Add Company Profile</h4>
+            <div class="col-md-6">
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="excecutive_summary">Excecutive Summary</label>
+                    <textarea class="form-control w-50" rows="6" name="excecutive_summary" required></textarea>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="technology_profile">Technology Profile</label>
+                    <textarea class="form-control w-50" rows="6" name="technology_profile" required></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="type_of_industry">Type of Industry</label>
+                    <input type="text" class="form-control w-50" name="type_of_industry" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="no_of_employees">No of Employees</label>
+                    <input type="number" class="form-control w-50" name="no_of_employees" required>
+                </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="ceo">CEO</label>
+                    <input type="text" class="form-control w-50" name="ceo" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="cfo">CFO</label>
+                    <input type="text" class="form-control w-50" name="cfo" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="cmo">CMO</label>
+                    <input type="text" class="form-control w-50" name="cmo" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="vp">VP</label>
+                    <input type="text" class="form-control w-50" name="vp" required>
+                </div>
+
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="product_name">Products</label>
+                    <input type="text" class="form-control w-50" name="product_name" required>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="text-center mt-5 mb-3">
+            <button type="submit" class="btn btn-secondary border-radius pl pr mb-3">Submit</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+{% endblock content %}

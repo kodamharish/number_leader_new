@@ -118,7 +118,9 @@
 
 <div class="sidebar">
     <h2>Features</h2>
-    <a class="dropdown-btn" href="#">PROFILE<span class="edit-icon">&nbsp;&#9998;</span></a>
+    <a class="dropdown-btn" href="#">PROFILE</a>
+    <!-- <a class="dropdown-btn" href="#">PROFILE<span class="edit-icon">&nbsp;&#9998;</span></a> -->
+
     <div class="dropdown-container">
         <a href="{% url 'comprehensive_profile' %}" data-info="{{ company_profile.excecutive_summary }}">Executive summary</a>
         <a href="{% url 'comprehensive_profile' %}" data-info="Industry: {{ company_profile.type_of_industry }}<br>No. of Employees: {{ company_profile.no_of_employees }}">Business Profile</a>
@@ -175,7 +177,20 @@
 
 {% if not company_profile or not products %}
 
-<div class="container" style="margin-left:270px">
+
+{% if not request.resolver_match.url_name == 'company_profile_form' %}
+
+<h4 class="mb-4 text-center mt-5">Please Add Company Profile</h4>
+
+<div class="text-center mt-5 mb-3">
+    <!-- <button type="submit" class="btn btn-secondary border-radius pl pr mb-3"><a href="{% url 'company_profile_form' company.company_id %}">Click here to Add Company Profile</a></button> -->
+
+    <a href="{% url 'company_profile_form' company.company_id %}">Click here to Add Company Profile</a>
+</div>
+
+{% endif %}
+
+<!-- <div class="container" style="margin-left:270px">
     <form method="post">
         {% csrf_token %}
         <div class="row mt-5 mb-5">
@@ -197,7 +212,7 @@
                     <input type="text" class="form-control w-50" name="type_of_industry" required>
                 </div>
                 <div class="mb-3 mt-3 inline">
-                    <label for="no_of_employees">no_of_employees</label>
+                    <label for="no_of_employees">No of Employees</label>
                     <input type="number" class="form-control w-50" name="no_of_employees" required>
                 </div>
 
@@ -233,7 +248,11 @@
             <button type="submit" class="btn btn-secondary border-radius pl pr mb-3">Submit</button>
         </div>
     </form>
-</div>
+</div> -->
+
+
+
+
 {% endif %}
 
 

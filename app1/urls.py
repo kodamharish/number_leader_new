@@ -37,6 +37,8 @@ urlpatterns = [
     path('update_company/<str:company_id>/', updateCompany, name='update_company'),
     path('comprehensive_profile', comprehensiveProfile, name='comprehensive_profile'),
     path('company_profile/<str:id>/',companyProfile,name='company_profile'),
+    path('company_profile_form/<str:id>/',companyProfileForm,name='company_profile_form'),
+
 
     #children
     path('my_team',myTeam,name='my_team'),
