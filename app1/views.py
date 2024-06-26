@@ -575,25 +575,109 @@ def updateCompany(request, company_id):
         
         return render(request, 'admin/update_company.html', context)
 
+
+
 # def companyProfile(request, id):
-#     cmp=Company.objects.get(company_id=id)
-#     context={
-#         'Company':cmp
+#     #company = get_object_or_404(Company, company_id=id)
+#     #company_profile = get_object_or_404(CompanyProfile, company_id=id)
+#     company = Company.objects.get(company_id=id)
+#     company_profile = CompanyProfile.objects.get(company_id=id)
+
+#     if company:
+#         if company_profile:
+#             products = Product.objects.filter(company_id=id) 
+#         else:
+#             company_profile = None
+    
+#     context = {
+#         'company': company,
+#         'company_profile': company_profile,
+#         'Products':products
 #     }
-#     return render(request,'admin/company_profile.html',context)
+#     return render(request, 'admin/company_profile.html',context)
+
+# def companyProfile(request, id):
+#     company = get_object_or_404(Company, company_id=id)
+#     try:
+#             company_profile = CompanyProfile.objects.get(company_id=id)
+#             products = Product.objects.get(company_id=id)
+
+#     except CompanyProfile.DoesNotExist or Product.DoesNotExist:
+#             company_profile = None
+#             products = None
+
+#     if request.method == 'POST':
+#         # Company profile
+#         company_profile.excecutive_summary = request.POST.get('excecutive_summary')
+#         company_profile.technology_profile = request.POST.get('technology_profile')
+#         company_profile.type_of_industry = request.POST.get('type_of_industry')
+#         company_profile.no_of_employees = request.POST.get('no_of_employees')
+#         company_profile.ceo = request.POST.get('ceo')
+#         company_profile.cfo = request.POST.get('cfo')
+#         company_profile.cmo = request.POST.get('cmo')
+#         company_profile.vp = request.POST.get('vp')
+
+#         # Products
+#         products.product_name = request.POST.get('product_name')
+#     else:
+#         print(products)
+#         context = {
+#             'company': company,
+#             'company_profile': company_profile,
+#             'products': products
+#         }
+
+#         return render(request, 'admin/company_profile.html', context)
 
 def companyProfile(request, id):
     company = get_object_or_404(Company, company_id=id)
-    company_profile = get_object_or_404(CompanyProfile, company_id=id)
-    products = Product.objects.filter(company_id=id) 
-    context = {
-        'company': company,
-        'company_profile': company_profile,
-        'Products':products
-    }
-    return render(request, 'admin/company_profile.html',context)
+    try:
+        company_profile = CompanyProfile.objects.get(company_id=id)
+    except CompanyProfile.DoesNotExist:
+        company_profile = None
 
+    try:
+        products = Product.objects.filter(company_id=id)
+    except Product.DoesNotExist:
+        products = None
 
+    if request.method == 'POST':
+            # Company profile
+            excecutive_summary = request.POST.get('excecutive_summary')
+            technology_profile = request.POST.get('technology_profile')
+            type_of_industry = request.POST.get('type_of_industry')
+            no_of_employees = request.POST.get('no_of_employees')
+            ceo = request.POST.get('ceo')
+            cfo = request.POST.get('cfo')
+            cmo = request.POST.get('cmo')
+            vp = request.POST.get('vp')
+            # Create the CompanyProfile instance and associate it with the Company instance
+            company_profile = CompanyProfile(
+            company_id=company,  # Associate with the newly created Company instancec
+            excecutive_summary=excecutive_summary,
+            technology_profile=technology_profile,
+            type_of_industry=type_of_industry,
+            no_of_employees=no_of_employees,
+            ceo=ceo,
+            cfo=cfo,
+            cmo=cmo,
+            vp=vp
+            )
+            company_profile.save()
+
+            # Products
+            product_name = request.POST.get('product_name')
+            products = Product(
+                company_id=company,
+                product_name = product_name
+            )
+            products.save()
+            messages.success(request, 'Data saved Successfully')
+            return redirect('comprehensive_profile')
+    else:
+        context ={'company': company,'company_profile': company_profile,'products': products
+        }
+        return render(request, 'admin/company_profile.html', context)
 
 def comprehensiveProfile(request):
     company_profile = CompanyProfile.objects.first()
