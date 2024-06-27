@@ -112,148 +112,72 @@
     }
 </style>
 
+<div>
+    {% if not current_user_company_profiles %}
+        {% if not request.resolver_match.url_name == 'company_profile_form' %}
+            <h4 class="mb-4 text-center mt-5">Please Add Company Profile</h4>
+            <div class="text-center mt-5 mb-3">
+                <a href="{% url 'company_profile_form' company.company_id %}">Click here to Add Company Profile</a>
+            </div>
+        {% endif %}
 
-
-
-
-<div class="sidebar">
-    <h2>Features</h2>
-    <a class="dropdown-btn" href="#">PROFILE</a>
-    <!-- <a class="dropdown-btn" href="#">PROFILE<span class="edit-icon">&nbsp;&#9998;</span></a> -->
-
-    <div class="dropdown-container">
-        <a href="{% url 'comprehensive_profile' %}" data-info="{{ company_profile.excecutive_summary }}">Executive summary</a>
-        <a href="{% url 'comprehensive_profile' %}" data-info="Industry: {{ company_profile.type_of_industry }}<br>No. of Employees: {{ company_profile.no_of_employees }}">Business Profile</a>
-        <a href="{% url 'comprehensive_profile' %}" data-info="{{ company_profile.technology_profile }}">Technology Profile</a>
-        <a href="{% url 'comprehensive_profile' %}" data-info="{% for product in Products %}{{ product.product_name }}<br>{% endfor %}">Product List</a>
-        <a href="{% url 'comprehensive_profile' %}" data-info="CEO: {{ company_profile.ceo }}<br>CFO: {{ company_profile.cfo }}<br>CMO: {{ company_profile.cmo }}<br>VP: {{ company_profile.vp }}">Organization chart</a>
-    </div>
-    <a class="dropdown-btn">CORPORATE FINANCE</a>
-    <div class="dropdown-container">
-        <a href="#" data-info="Planning and Budgeting details...">Planning and Budgeting</a>
-        <a href="#" data-info="Financial Statement details...">Financial Statement</a>
-        <a href="#" data-info="Forecasting details...">Forecasting</a>
-        <a href="#" data-info="Performance Management details...">Performance Management</a>
-        <a href="#" data-info="Business Modelling and Valuation details...">Business Modelling and Valuation</a>
-        <a href="#" data-info="Predictive and Prespective Analysis details...">Predictive and Prespective Analysis</a>
-        <a href="#" data-info="Decision Making Support details...">Decision Making Support</a>
-        <a href="#" data-info="Dashboards & Reporting details...">Dashboards & Reporting</a>
-        <a href="#" data-info="Industry Benchmarking details...">Industry Benchmarking</a>
-    </div>
-    <a class="dropdown-btn">DUE DILIGENCE</a>
-    <div class="dropdown-container">
-        <a href="#" data-info="Compliance Monitoring details...">Compliance Monitoring</a>
-        <a href="#" data-info="Real Time Monitoring details...">Real Time Monitoring</a>
-        <a href="#" data-info="Document Management details...">Document Management</a>
-        <a href="#" data-info="Risk Assessment details...">Risk Assessment</a>
-    </div>
-    <a class="dropdown-btn">FUND RAISING</a>
-    <div class="dropdown-container">
-        <a href="#" data-info="Investor Relations details...">Investor Relations</a>
-        <a href="#" data-info="M&A Matching details...">M&A Matching</a>
-        <a href="#" data-info="Investor Matching details...">Investor Matching</a>
-    </div>
-    <a class="dropdown-btn">INVESTOR TOOL</a>
-    <div class="dropdown-container">
-        <a href="#" data-info="Startup Exchange details...">Startup Exchange</a>
-        <a href="#" data-info="Performance Benchmarking details...">Performance Benchmarking</a>
-        <a href="#" data-info="Startup Matching details...">Startup Matching</a>
-        <a href="#" data-info="Exclusive Insights Preview details...">Exclusive Insights Preview</a>
-        <a href="#" data-info="Syndication & Strategic Partnership details...">Syndication & Strategic Partnership</a>
-        <a href="#" data-info="Investor Dashboards details...">Investor Dashboards</a>
-    </div>
+        {%else%}
+        <div class="sidebar">
+            <h2>Features</h2>
+            <a class="dropdown-btn" href="#">PROFILE</a>
+            <!-- <a class="dropdown-btn" href="#">PROFILE<span class="edit-icon">&nbsp;&#9998;</span></a> -->
+        
+            <div class="dropdown-container">
+                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{{ company_profile.excecutive_summary }}">Executive summary</a>
+                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="Industry: {{ company_profile.type_of_industry }}<br>No. of Employees: {{ company_profile.no_of_employees }}">Business Profile</a>
+                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{{ company_profile.technology_profile }}">Technology Profile</a>
+                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{% for product in Products %}{{ product.product_name }}<br>{% endfor %}">Product List</a>
+                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="CEO: {{ company_profile.ceo }}<br>CFO: {{ company_profile.cfo }}<br>CMO: {{ company_profile.cmo }}<br>VP: {{ company_profile.vp }}">Organization chart</a>
+            </div>
+            <a class="dropdown-btn">CORPORATE FINANCE</a>
+            <div class="dropdown-container">
+                <a href="#" data-info="Planning and Budgeting details...">Planning and Budgeting</a>
+                <a href="#" data-info="Financial Statement details...">Financial Statement</a>
+                <a href="#" data-info="Forecasting details...">Forecasting</a>
+                <a href="#" data-info="Performance Management details...">Performance Management</a>
+                <a href="#" data-info="Business Modelling and Valuation details...">Business Modelling and Valuation</a>
+                <a href="#" data-info="Predictive and Prespective Analysis details...">Predictive and Prespective Analysis</a>
+                <a href="#" data-info="Decision Making Support details...">Decision Making Support</a>
+                <a href="#" data-info="Dashboards & Reporting details...">Dashboards & Reporting</a>
+                <a href="#" data-info="Industry Benchmarking details...">Industry Benchmarking</a>
+            </div>
+            <a class="dropdown-btn">DUE DILIGENCE</a>
+            <div class="dropdown-container">
+                <a href="#" data-info="Compliance Monitoring details...">Compliance Monitoring</a>
+                <a href="#" data-info="Real Time Monitoring details...">Real Time Monitoring</a>
+                <a href="#" data-info="Document Management details...">Document Management</a>
+                <a href="#" data-info="Risk Assessment details...">Risk Assessment</a>
+            </div>
+            <a class="dropdown-btn">FUND RAISING</a>
+            <div class="dropdown-container">
+                <a href="#" data-info="Investor Relations details...">Investor Relations</a>
+                <a href="#" data-info="M&A Matching details...">M&A Matching</a>
+                <a href="#" data-info="Investor Matching details...">Investor Matching</a>
+            </div>
+            <a class="dropdown-btn">INVESTOR TOOL</a>
+            <div class="dropdown-container">
+                <a href="#" data-info="Startup Exchange details...">Startup Exchange</a>
+                <a href="#" data-info="Performance Benchmarking details...">Performance Benchmarking</a>
+                <a href="#" data-info="Startup Matching details...">Startup Matching</a>
+                <a href="#" data-info="Exclusive Insights Preview details...">Exclusive Insights Preview</a>
+                <a href="#" data-info="Syndication & Strategic Partnership details...">Syndication & Strategic Partnership</a>
+                <a href="#" data-info="Investor Dashboards details...">Investor Dashboards</a>
+            </div>
+        </div>
+    {% endif %}
 </div>
+
+
 
 <div class="info-card" id="infoCard">
     <p id="infoContent">Hover over a submenu item to see details here.</p>
 </div>
 
-
-
-
-
-
-
-
-{% if not company_profile or not products %}
-
-
-{% if not request.resolver_match.url_name == 'company_profile_form' %}
-
-<h4 class="mb-4 text-center mt-5">Please Add Company Profile</h4>
-
-<div class="text-center mt-5 mb-3">
-    <!-- <button type="submit" class="btn btn-secondary border-radius pl pr mb-3"><a href="{% url 'company_profile_form' company.company_id %}">Click here to Add Company Profile</a></button> -->
-
-    <a href="{% url 'company_profile_form' company.company_id %}">Click here to Add Company Profile</a>
-</div>
-
-{% endif %}
-
-<!-- <div class="container" style="margin-left:270px">
-    <form method="post">
-        {% csrf_token %}
-        <div class="row mt-5 mb-5">
-            <h4 class="mb-4 text-center">Please Add Company Profile</h4>
-            <div class="col-md-6">  
-                
-                <div class="mb-3 mt-3 inline">
-                    <label for="excecutive_summary">Excecutive Summary</label>
-                    <textarea class="form-control w-50" rows="6"  name="excecutive_summary" required></textarea>
-                </div>
-                <div class="mb-3 mt-3 inline">
-                    <label for="technology_profile">Technology Profile</label>
-                    <textarea class="form-control w-50" rows="6"  name="technology_profile" required></textarea>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3 mt-3 inline">
-                    <label for="type_of_industry">Type of Industry</label>
-                    <input type="text" class="form-control w-50" name="type_of_industry" required>
-                </div>
-                <div class="mb-3 mt-3 inline">
-                    <label for="no_of_employees">No of Employees</label>
-                    <input type="number" class="form-control w-50" name="no_of_employees" required>
-                </div>
-
-                <div class="mb-3 mt-3 inline">
-                    <label for="ceo">CEO</label>
-                    <input type="text" class="form-control w-50" name="ceo" required>
-                </div>
-                <div class="mb-3 mt-3 inline">
-                    <label for="cfo">CFO</label>
-                    <input type="text" class="form-control w-50" name="cfo" required>
-                </div>
-                <div class="mb-3 mt-3 inline">
-                    <label for="cmo">CMO</label>
-                    <input type="text" class="form-control w-50" name="cmo" required>
-                </div>
-                <div class="mb-3 mt-3 inline">
-                    <label for="vp">VP</label>
-                    <input type="text" class="form-control w-50" name="vp" required>
-                </div>
-
-
-                <div class="mb-3 mt-3 inline">
-                    <label for="product_name">Products</label>
-                    <input type="text" class="form-control w-50" name="product_name" required>
-                </div>
-            </div>
-            
-        </div>
-        
-       
-        
-        <div class="text-center mt-5 mb-3">
-            <button type="submit" class="btn btn-secondary border-radius pl pr mb-3">Submit</button>
-        </div>
-    </form>
-</div> -->
-
-
-
-
-{% endif %}
 
 
 <script>

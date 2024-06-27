@@ -74,12 +74,16 @@
 
                     <div class="mb-3 mt-3">
                         <label for="company_type"><strong>Are you a:</strong></label>
-                        <select class="form-control" name="company_type" required>
+                        <select class="form-control" name="company_type" id="company_type" onchange="showCompanyTypeDetails()" required>
                             <option value="" disabled selected>Select your option</option>
                             <option value="Startup">Startup</option>
                             <option value="Investor">Investor</option>
                             <option value="CA_firm"> Enablers</option>
                         </select>
+                    </div>
+
+                    <div class="mb-3 mt-3" id="company_type_details">
+                        <!-- Details will be displayed here -->
                     </div>
                 </div>
             </div>
@@ -258,9 +262,17 @@
 </script>
 
 <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+    function showCompanyTypeDetails() {
+        const companyType = document.getElementById('company_type').value;
+        let details = '';
+        if (companyType === 'Startup') {
+            details = 'Startups and MSMEs, sign up, get noticed by investors and get funded.';
+        } else if (companyType === 'Investor') {
+            details = 'Angel investors, VC, PE, Family offices, sign up, discover promising ventures and gains insights to invest.';
+        } else if (companyType === 'CA_firm') {
+            details = 'Professional firms, investment bankers, incubators, mentors, sign up to connect and support innovative startups.';
+        }
+        document.getElementById('company_type_details').innerText = details;
+    }
 </script>
 {% endblock content %}

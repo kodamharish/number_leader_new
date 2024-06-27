@@ -768,15 +768,15 @@ def companyProfileForm(request,id):
             )
             products.save()
             messages.success(request, 'Data saved Successfully')
-            return redirect('comprehensive_profile')
+            return redirect('update_company',id)
     else:
         return render(request, 'admin/company_profile_form.html')
 
 
 
-def comprehensiveProfile(request):
-    company_profile = CompanyProfile.objects.first()
-    products = Product.objects.all()
+def comprehensiveProfile(request,id):
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    products = Product.objects.get(company_id = id)
     context ={'company_profile': company_profile, 'products': products}
     return render(request, 'admin/comprehensive.html', context)
 

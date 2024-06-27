@@ -132,3 +132,10 @@ label
 }
 
 
+/* Adjust margins and padding as needed */
+.dropdown-item {
+    display: inline;
+    padding: 8px 10px;
+  }
+  
+ 

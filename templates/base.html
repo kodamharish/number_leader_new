@@ -88,23 +88,35 @@
               aria-expanded="false">
               My Company
             </a>
+            
+
             <ul class="dropdown-menu" aria-labelledby="myCompanyDropdown">
               {% if current_user_companies %}
-              {% for company in current_user_companies %}
-              <li><a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
-                  data-company-name="{{ company.company_name }}">{{ company.company_name }} -  <a href="{% url 'update_company' company.company_id %}" style="position: absolute;top: 13px;right: 10px;">Update</a></a></li>
-              {% endfor %}
+                {% for company in current_user_companies %}
+                  <li>
+                    <a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
+                       data-company-name="{{ company.company_name }}">
+                      {{ company.company_name }} 
+                      {% if current_user_company_profiles%}
+                      <a href="{% url 'update_company' company.company_id %}"> - Update</a>
+                      {% endif %}
+                    </a>
+                  </li>
+                {% endfor %}
               {% endif %}
-
               <li><a class="dropdown-item" href="{% url 'add_company' %}">Add</a></li>
             </ul>
+
+            
+            
+            
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Investor</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"> Enablers</a>
-            <!-- ca firm -->
+            <a class="nav-link" href="#"> Enablers</a> <!-- ca firm -->
+            
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
