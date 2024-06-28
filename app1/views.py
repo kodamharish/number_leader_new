@@ -58,11 +58,51 @@ def login_new(request):
 #         return render(request, 'login.html')
 
 
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+        
+#         # Check if the user exists in both User and Team models
+#         user = User.objects.filter(username=username).first()
+#         team = Team.objects.filter(username=username).first()
+
+#         if user:
+#             if check_password(password, user.password):
+#                 request.session['current_user_id'] = user.user_id
+#                 if user.user_type == 'admin':
+#                     return redirect('admin_dashboard')
+#                 if user.user_type == 'super_admin':
+#                     return redirect('super_admin_dashboard')
+#                 # elif user.user_type == 'editor':
+#                 #     return redirect('editor_dashboard')
+#                 # elif user.user_type == 'user':
+#                 #     return redirect('user_dashboard')
+#             else:
+#                 messages.error(request, 'Invalid username or password')
+#         elif team:
+#             if check_password(password, team.password):
+#                 request.session['current_subuser_id'] = team.subuser_id
+#                 if team.user_type == 'admin':
+#                     return redirect('admin_dashboard')
+#                 elif team.user_type == 'editor':
+#                     return redirect('editor_dashboard')
+#                 elif team.user_type == 'user':
+#                     return redirect('user_dashboard')
+#             else:
+#                 messages.error(request, 'Invalid username or password')
+#         else:
+#             messages.error(request, 'Invalid username or password')
+#         return render(request, 'login.html')
+#     else:
+#         return render(request, 'login.html')
+    
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
+        remember_me = request.POST.get('remember_me')  # Get the "Remember Me" value
+
         # Check if the user exists in both User and Team models
         user = User.objects.filter(username=username).first()
         team = Team.objects.filter(username=username).first()
@@ -70,6 +110,10 @@ def login(request):
         if user:
             if check_password(password, user.password):
                 request.session['current_user_id'] = user.user_id
+                if remember_me:
+                    request.session.set_expiry(86400)  # 1 day
+                else:
+                    request.session.set_expiry(0)  # Browser close
                 if user.user_type == 'admin':
                     return redirect('admin_dashboard')
                 if user.user_type == 'super_admin':
@@ -83,6 +127,10 @@ def login(request):
         elif team:
             if check_password(password, team.password):
                 request.session['current_subuser_id'] = team.subuser_id
+                if remember_me:
+                    request.session.set_expiry(86400)  # 1 day
+                else:
+                    request.session.set_expiry(0)  # Browser close
                 if team.user_type == 'admin':
                     return redirect('admin_dashboard')
                 elif team.user_type == 'editor':
@@ -102,7 +150,7 @@ def logout(request):
     request.session.flush()
     return redirect('login')
 
-# Start Up
+# Sign Up
 def signup(request):
     if request.method == 'POST':
         # Extract form data using request.POST.get
@@ -181,18 +229,18 @@ def signup(request):
             # Ensure the company was saved correctly
             if company.pk:
                 messages.error(request,'User Created Succesfully')
-                return redirect('sign_up')
+                return redirect('signup')
                 
             else:
                 messages.error(request,'Something went wrong please try again later')
-                return redirect('sign_up')
+                return redirect('signup')
                 
         else:
             messages.error(request,'Something went wrong please try again later')
-            return redirect('sign_up')
+            return redirect('signup')
            
     else:
-        return render(request, 'sign_up_new.html')
+        return render(request, 'sign_up.html')
 
 
 
@@ -524,7 +572,7 @@ def updateCompany(request, company_id):
         # Fetch existing company and profile
         company = get_object_or_404(Company, company_id=company_id)
         company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
-        products = get_object_or_404(Product, company_id=company_id)
+        #products = get_object_or_404(Product, company_id=company_id)
 
         
         # Company Details
@@ -551,12 +599,12 @@ def updateCompany(request, company_id):
         company_profile.vp = request.POST.get('vp')
 
         # Products
-        products.product_name = request.POST.get('product_name')
+        #products.product_name = request.POST.get('product_name')
         
         # Save the updates
         company.save()
         company_profile.save()
-        products.save()
+        #products.save()
 
         messages.success(request, 'Data updated successfully')
         return redirect('update_company', company_id=company_id)
@@ -564,13 +612,19 @@ def updateCompany(request, company_id):
         # Fetch existing company and profile for initial form rendering
         company = get_object_or_404(Company, company_id=company_id)
         company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
-        products = get_object_or_404(Product, company_id=company_id)
+        #products = get_object_or_404(Product, company_id=company_id)
 
         
+        # context = {
+        #     'company': company,
+        #     'company_profile': company_profile,
+        #     'products':products
+        # }
+
         context = {
             'company': company,
             'company_profile': company_profile,
-            'products':products
+           
         }
         
         return render(request, 'admin/update_company.html', context)
@@ -761,12 +815,12 @@ def companyProfileForm(request,id):
             company_profile.save()
 
             # Products
-            product_name = request.POST.get('product_name')
-            products = Product(
-                company_id=company,
-                product_name = product_name
-            )
-            products.save()
+            # product_name = request.POST.get('product_name')
+            # products = Product(
+            #     company_id=company,
+            #     product_name = product_name
+            # )
+            # products.save()
             messages.success(request, 'Data saved Successfully')
             return redirect('update_company',id)
     else:
@@ -776,8 +830,10 @@ def companyProfileForm(request,id):
 
 def comprehensiveProfile(request,id):
     company_profile = CompanyProfile.objects.get(company_id = id)
-    products = Product.objects.get(company_id = id)
-    context ={'company_profile': company_profile, 'products': products}
+    #products = Product.objects.get(company_id = id)
+    #context ={'company_profile': company_profile, 'products': products}
+    context ={'company_profile': company_profile}
+
     return render(request, 'admin/comprehensive.html', context)
 
 #Editor

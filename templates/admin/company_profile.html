@@ -131,7 +131,7 @@
                 <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{{ company_profile.excecutive_summary }}">Executive summary</a>
                 <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="Industry: {{ company_profile.type_of_industry }}<br>No. of Employees: {{ company_profile.no_of_employees }}">Business Profile</a>
                 <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{{ company_profile.technology_profile }}">Technology Profile</a>
-                <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{% for product in Products %}{{ product.product_name }}<br>{% endfor %}">Product List</a>
+                <!-- <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="{% for product in Products %}{{ product.product_name }}<br>{% endfor %}">Product List</a> -->
                 <a href="{% url 'comprehensive_profile' company_profile.company_id %}" data-info="CEO: {{ company_profile.ceo }}<br>CFO: {{ company_profile.cfo }}<br>CMO: {{ company_profile.cmo }}<br>VP: {{ company_profile.vp }}">Organization chart</a>
             </div>
             <a class="dropdown-btn">CORPORATE FINANCE</a>

@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app1.middleware.SessionExpiryMiddleware',  # Add this line
 ]
 
 ROOT_URLCONF = 'numberleader.urls'
@@ -138,3 +139,7 @@ EMAIL_HOST='smtp.gmail.com'
 EMAIL_HOST_USER='harishkodam1997@gmail.com'
 EMAIL_HOST_PASSWORD='vzom miqx vfdn cxbc'
 EMAIL_PORT=587
+
+# Session settings
+SESSION_COOKIE_AGE = 86400  # 1 day in seconds
+SESSION_SAVE_EVERY_REQUEST = True

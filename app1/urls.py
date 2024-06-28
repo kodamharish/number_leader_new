@@ -6,15 +6,15 @@ urlpatterns = [
     path('',home,name='home'),
     path('home',home,name='home'),
     path('about',about,name='about'),
-    path('login_new',login_new,name='login_new'),
+    #path('login_new',login_new,name='login_new'),
 
     
 
     #login,logout
     path('login',login,name='login'),
     path('logout',logout,name='logout'),
-    path('sign_up',signup,name='sign_up'),
-    path('sign_up_new',sign_up_new,name='sign_up_new'),
+    #path('sign_up',signup,name='sign_up'),
+    path('signup',signup,name='signup'),
 
     #path('investor_sign_up',investorSignUp,name='investor_sign_up'),
     #path('ca_firm_sign_up',caFirmSignUp,name='ca_firm_sign_up'),
