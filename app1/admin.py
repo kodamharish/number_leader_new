@@ -17,10 +17,10 @@ class CompanyProfileAdmin(admin.ModelAdmin):
     list_display_links = ('company_id',)  
 admin.site.register(CompanyProfile, CompanyProfileAdmin)
 
-class ProductsAdmin(admin.ModelAdmin):
-    list_display = ('company_id','product_name')
-    list_display_links = ('company_id',)  
-admin.site.register(Product, ProductsAdmin)
+# class ProductsAdmin(admin.ModelAdmin):
+#     list_display = ('company_id','product_name')
+#     list_display_links = ('company_id',)  
+# admin.site.register(Product, ProductsAdmin)
 
 
 class TeamAdmin(admin.ModelAdmin):

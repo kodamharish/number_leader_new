@@ -94,7 +94,8 @@ class NewsOfInvestment(models.Model):
 
 class Team(models.Model):
     subuser_id = models.CharField(max_length=10, primary_key=True)
-    creator_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    #creator_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    creator_id = models.CharField(max_length=15)
     company_id = models.ForeignKey(Company,on_delete=models.CASCADE)
     username = models.CharField(max_length=50, unique=True, null=False)
     email = models.EmailField(null=False)
@@ -115,7 +116,8 @@ class Team(models.Model):
             # Hash the password
             self.password = make_password(self.password)
         super(Team, self).save(*args, **kwargs)
-    
+    def __str__(self):
+        return self.subuser_id
 
 
 

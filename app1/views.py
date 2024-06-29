@@ -16,12 +16,9 @@ def home(request):
 def about(request):
     return render(request,'about.html')
 
-def sign_up_new(request):
-    return render(request,'sign_up_new.html')
+def services(request):
+    return render(request,'services.html')
 
-
-def login_new(request):
-    return render(request,'login_new.html')
 #Login and Logout
 # def login(request):
 #     if request.method == 'POST':
@@ -317,7 +314,13 @@ def myTeam(request):
     else:
         user_context = custom_user(request)
         current_user = user_context.get('current_user')  
-        total_team_data = Team.objects.filter(creator_id =current_user)
+        subuser_context = custom_subuser(request)
+        current_subuser = subuser_context.get('current_subuser') 
+        if current_user:
+            total_team_data = Team.objects.filter(creator_id =current_user)
+        if current_subuser:
+                total_team_data = Team.objects.filter(creator_id = current_subuser)
+
         context = {'total_team_data':total_team_data}
         return render(request, 'admin/my_team.html',context)
 
@@ -351,11 +354,21 @@ def addTeam(request):
             return redirect('add_team')
         user_context = custom_user(request)
         current_user = user_context.get('current_user')  
+        subuser_context = custom_subuser(request)
+        current_subuser = subuser_context.get('current_subuser') 
+        #creator_id = current_subuser.creator_id
 
-        # Fetch the User instance for the creator_id
-        creator_user = User.objects.get(user_id=current_user.user_id)
+        if current_user:
+            # Fetch the User instance for the creator_id
+              #creator_user = User.objects.get(user_id=current_user.user_id)
+              creator_user = current_user.user_id
+        if current_subuser:
+              if current_subuser.user_type == 'editor':
+                  # Fetch the User instance for the creator_id
+                  #creator_user = Team.objects.get(subuser_id=current_subuser.subuser_id)
+                  creator_user = current_subuser.subuser_id
+
         # Fetch the Company instance based on company_id
-        
         company_id = Company.objects.get(company_id=companyID)
         # Create and save User object
         team = Team(
@@ -428,8 +441,24 @@ def updateTeam(request, id):
         user_context = custom_user(request)
         current_user = user_context.get('current_user')  
 
-        # Fetch the User instance for the creator_id
-        creator_user = User.objects.get(user_id=current_user.user_id)
+        # # Fetch the User instance for the creator_id
+        # creator_user = User.objects.get(user_id=current_user.user_id)
+
+        subuser_context = custom_subuser(request)
+        current_subuser = subuser_context.get('current_subuser') 
+
+        if current_user:
+            # Fetch the User instance for the creator_id
+              #creator_user = User.objects.get(user_id=current_user.user_id)
+              creator_user = current_user.user_id
+        if current_subuser:
+              if current_subuser.user_type == 'editor':
+                  # Fetch the User instance for the creator_id
+                  #creator_user = Team.objects.get(subuser_id=current_subuser.subuser_id)
+                  creator_user = current_subuser.subuser_id
+
+
+        
         # Fetch the Company instance based on company_id
         company_id = Company.objects.get(company_id=companyID)
 

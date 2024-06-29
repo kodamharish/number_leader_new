@@ -43,7 +43,7 @@
             <a class="nav-link" href="#">Products</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
+            <a class="nav-link" href="{% url 'services' %}">Services</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'login' %}">Sign In</a>
@@ -179,14 +179,14 @@
             <a class="nav-link" href="#">User</a>
           </li>
 
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'parent' %}">Originator</a></li>
               <li><a class="dropdown-item" href="{% url 'my_team' %}">Associates</a></li>
-
             </ul>
-          </li>
+          </li> -->
+
           {% endif %}
 
           <!-- User -->
