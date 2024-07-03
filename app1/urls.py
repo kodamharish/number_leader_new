@@ -8,8 +8,8 @@ urlpatterns = [
     path('home',home,name='home'),
     path('about',about,name='about'),
     path('services',services,name='services'),
+    path('contact',contact,name='contact'),
 
-    
 
     #login,logout
     path('login',login,name='login'),
@@ -33,13 +33,15 @@ urlpatterns = [
 
     #Admin
     path('admin_dashboard',adminDashboard,name='admin_dashboard'),
+    
     #company
     path('add_company',addCompany,name='add_company'), 
     path('update_company/<str:company_id>/', updateCompany, name='update_company'),
     path('comprehensive_profile/<str:id>/', comprehensiveProfile, name='comprehensive_profile'),
     path('company_profile/<str:id>/',companyProfile,name='company_profile'),
     path('company_profile_form/<str:id>/',companyProfileForm,name='company_profile_form'),
-
+    path('financial_statement/<str:id>/',financialStatement,name='financial_statement'),
+    path('revenue_verticals/<str:company_id>/',revenueVerticals,name='revenue_verticals'),
 
     #children
     path('my_team',myTeam,name='my_team'),
@@ -48,6 +50,8 @@ urlpatterns = [
     path('delete_team/<str:id>',deleteTeam,name='delete_team'),
 
     path('parent',parent,name='parent'),
+    path('profit_loss_balance_sheet',profitLossBalanceSheetCalculation,name='profit_loss_balance_sheet'),
+
     #editor
     path('editor_dashboard',editorDashboard,name='editor_dashboard'),
     #user
@@ -56,10 +60,5 @@ urlpatterns = [
     #password reset
     path('forgot_password_1',forgotPasswordOne,name='forgot_password_1'),
     path('forgot_password_2',forgotPasswordTwo,name='forgot_password_2'),
-
-
-
-
-
 
 ]

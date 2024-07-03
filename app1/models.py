@@ -80,6 +80,7 @@ class CompanyProfile(models.Model):
     cfo = models.CharField(max_length=100)
     cmo = models.CharField(max_length=100)
     vp = models.CharField(max_length=100)
+    date_of_incorporation = models.DateField(null= True)
 
 class Product(models.Model):
     company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
@@ -119,6 +120,62 @@ class Team(models.Model):
     def __str__(self):
         return self.subuser_id
 
+
+
+#Profit Loss Balance Sheet
+class ProfitLossBalanceSheet(models.Model):
+    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
+    #income
+    revenue_recurring = models.FloatField()
+    revenue_one_time = models.FloatField()
+    other_income = models.FloatField()
+    total_income = models.FloatField()
+    #expenses
+    cost_of_materials_consumed = models.FloatField()
+    changes_inventories_of_fg_wip = models.FloatField()
+    emp_benefits_expenses = models.FloatField()
+    depreciation_amortization_expenses = models.FloatField()
+    finance_cost = models.FloatField()
+    other_expenses = models.FloatField()
+    total_expenses = models.FloatField()
+    #tax
+    profit_before_tax = models.FloatField()
+    current_tax_expense = models.FloatField()
+    deferred_tax = models.FloatField()
+    profit_after_tax = models.FloatField()
+
+
+                    
+class HomogenousProduct(models.Model):
+    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=100)
+    selling_price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
+    units_sold = models.IntegerField()
+    expected_growth_rate = models.IntegerField()
+    revenue_from_product = models.DecimalField(max_digits=10, decimal_places=2, editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        # Convert selling_price_per_unit and units_sold to appropriate types if necessary
+        if isinstance(self.selling_price_per_unit, str):
+            self.selling_price_per_unit = float(self.selling_price_per_unit)
+        if isinstance(self.units_sold, str):
+            self.units_sold = int(self.units_sold)
+        
+        self.revenue_from_product = self.selling_price_per_unit * self.units_sold
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.product_name  # or any other string field that represents the product
+    
+    
+class HeterogenousProduct(models.Model):
+    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=100)
+    expected_revenue = models.DecimalField(max_digits=10, decimal_places=2)
+    expected_growth_rate = models.IntegerField()
+    def __str__(self):
+        return self.product_name
+    
 
 
 

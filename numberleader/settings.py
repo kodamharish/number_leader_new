@@ -50,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app1.middleware.SessionExpiryMiddleware',  # Add this line
+    'app1.middleware.LoginRedirectMiddleware',  # Add this line
+
 ]
 
 ROOT_URLCONF = 'numberleader.urls'

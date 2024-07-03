@@ -30,4 +30,6 @@ admin.site.register(Team, TeamAdmin)
 
 admin.site.register(NewsOfIndustry)
 admin.site.register(NewsOfInvestment)
-
+admin.site.register(ProfitLossBalanceSheet)
+admin.site.register(HomogenousProduct)
+admin.site.register(HeterogenousProduct)

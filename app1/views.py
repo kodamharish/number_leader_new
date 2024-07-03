@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.paginator import Paginator
 from .context_processors import custom_user,custom_subuser
+from datetime import datetime,timedelta
+from dateutil.relativedelta import relativedelta
 
 #Mail Configuration
 from django.core.mail import send_mail
@@ -19,41 +21,11 @@ def about(request):
 def services(request):
     return render(request,'services.html')
 
+def contact(request):
+    return render(request,'contact_us.html')
+
+
 #Login and Logout
-# def login(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-        
-#         # Check if the user exists
-#         if User.objects.filter(username=username).exists() and Team.objects.filter(username=username):
-#             user = User.objects.get(username=username)
-#             team = Team.objects.get(username=username)
-
-#             # Check if the password is correct
-#             if check_password(password, user.password or team.password):
-#                 # Password is correct, proceed with login
-#                 if user:
-#                     request.session['current_user_id'] = user.user_id
-#                 if team:
-#                     request.session['current_user_id'] = team.subuser_id
-#                 if user.user_type == 'admin':
-#                     return redirect('admin_dashboard')
-#                 elif team.user_type == 'editor':
-#                     return redirect('editor_dashboard')
-#                 elif team.user_type == 'user':
-#                     return redirect('user_dashboard')
-#             else:
-#                 # Incorrect password
-#                 messages.error(request, 'Invalid username or password')
-#                 return render(request, 'login.html')
-#         else:
-#             # User does not exist
-#             messages.error(request, 'Invalid username or password')
-#             return render(request, 'login.html')
-#     else:
-#         return render(request, 'login.html')
-
 
 # def login(request):
 #     if request.method == 'POST':
@@ -94,7 +66,7 @@ def services(request):
 #     else:
 #         return render(request, 'login.html')
     
-def login(request):
+def login1(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -109,16 +81,15 @@ def login(request):
                 request.session['current_user_id'] = user.user_id
                 if remember_me:
                     request.session.set_expiry(86400)  # 1 day
+                    return redirect('admin_dashboard')
+
                 else:
                     request.session.set_expiry(0)  # Browser close
                 if user.user_type == 'admin':
                     return redirect('admin_dashboard')
                 if user.user_type == 'super_admin':
                     return redirect('super_admin_dashboard')
-                # elif user.user_type == 'editor':
-                #     return redirect('editor_dashboard')
-                # elif user.user_type == 'user':
-                #     return redirect('user_dashboard')
+               
             else:
                 messages.error(request, 'Invalid username or password')
         elif team:
@@ -143,6 +114,59 @@ def login(request):
         return render(request, 'login.html')
     
 
+
+
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remember_me = request.POST.get('remember_me')  # Get the "Remember Me" value
+
+        # Check if the user exists in both User and Team models
+        user = User.objects.filter(username=username).first()
+        team = Team.objects.filter(username=username).first()
+
+        if user:
+            if check_password(password, user.password):
+                request.session['current_user_id'] = user.user_id
+                if remember_me:
+                    request.session.set_expiry(86400)  # 1 day
+                else:
+                    request.session.set_expiry(0)  # Browser close
+                
+                if user.user_type == 'admin':
+                    return redirect('admin_dashboard')
+                elif user.user_type == 'super_admin':
+                    return redirect('super_admin_dashboard')
+                # Uncomment and adjust these lines if needed
+                # elif user.user_type == 'editor':
+                #     return redirect('editor_dashboard')
+                # elif user.user_type == 'user':
+                #     return redirect('user_dashboard')
+            else:
+                messages.error(request, 'Invalid username or password')
+        elif team:
+            if check_password(password, team.password):
+                request.session['current_subuser_id'] = team.subuser_id
+                if remember_me:
+                    request.session.set_expiry(86400)  # 1 day
+                else:
+                    request.session.set_expiry(0)  # Browser close
+                
+                if team.user_type == 'admin':
+                    return redirect('admin_dashboard')
+                elif team.user_type == 'editor':
+                    return redirect('editor_dashboard')
+                elif team.user_type == 'user':
+                    return redirect('user_dashboard')
+            else:
+                messages.error(request, 'Invalid username or password')
+        else:
+            messages.error(request, 'Invalid username or password')
+        
+        return render(request, 'login.html')
+    else:
+        return render(request, 'login.html')
 def logout(request):
     request.session.flush()
     return redirect('login')
@@ -660,57 +684,7 @@ def updateCompany(request, company_id):
 
 
 
-# def companyProfile(request, id):
-#     #company = get_object_or_404(Company, company_id=id)
-#     #company_profile = get_object_or_404(CompanyProfile, company_id=id)
-#     company = Company.objects.get(company_id=id)
-#     company_profile = CompanyProfile.objects.get(company_id=id)
 
-#     if company:
-#         if company_profile:
-#             products = Product.objects.filter(company_id=id) 
-#         else:
-#             company_profile = None
-    
-#     context = {
-#         'company': company,
-#         'company_profile': company_profile,
-#         'Products':products
-#     }
-#     return render(request, 'admin/company_profile.html',context)
-
-# def companyProfile(request, id):
-#     company = get_object_or_404(Company, company_id=id)
-#     try:
-#             company_profile = CompanyProfile.objects.get(company_id=id)
-#             products = Product.objects.get(company_id=id)
-
-#     except CompanyProfile.DoesNotExist or Product.DoesNotExist:
-#             company_profile = None
-#             products = None
-
-#     if request.method == 'POST':
-#         # Company profile
-#         company_profile.excecutive_summary = request.POST.get('excecutive_summary')
-#         company_profile.technology_profile = request.POST.get('technology_profile')
-#         company_profile.type_of_industry = request.POST.get('type_of_industry')
-#         company_profile.no_of_employees = request.POST.get('no_of_employees')
-#         company_profile.ceo = request.POST.get('ceo')
-#         company_profile.cfo = request.POST.get('cfo')
-#         company_profile.cmo = request.POST.get('cmo')
-#         company_profile.vp = request.POST.get('vp')
-
-#         # Products
-#         products.product_name = request.POST.get('product_name')
-#     else:
-#         print(products)
-#         context = {
-#             'company': company,
-#             'company_profile': company_profile,
-#             'products': products
-#         }
-
-#         return render(request, 'admin/company_profile.html', context)
 
 def companyProfile(request, id):
     company = get_object_or_404(Company, company_id=id)
@@ -762,55 +736,7 @@ def companyProfile(request, id):
         }
         return render(request, 'admin/company_profile.html', context)
     
-# def companyProfileForm(request):
-#     company = get_object_or_404(Company, company_id=id)
-#     try:
-#         company_profile = CompanyProfile.objects.get(company_id=id)
-#     except CompanyProfile.DoesNotExist:
-#         company_profile = None
 
-#     try:
-#         products = Product.objects.filter(company_id=id)
-#     except Product.DoesNotExist:
-#         products = None
-
-#     if request.method == 'POST':
-#             # Company profile
-#             excecutive_summary = request.POST.get('excecutive_summary')
-#             technology_profile = request.POST.get('technology_profile')
-#             type_of_industry = request.POST.get('type_of_industry')
-#             no_of_employees = request.POST.get('no_of_employees')
-#             ceo = request.POST.get('ceo')
-#             cfo = request.POST.get('cfo')
-#             cmo = request.POST.get('cmo')
-#             vp = request.POST.get('vp')
-#             # Create the CompanyProfile instance and associate it with the Company instance
-#             company_profile = CompanyProfile(
-#             company_id=company,  # Associate with the newly created Company instancec
-#             excecutive_summary=excecutive_summary,
-#             technology_profile=technology_profile,
-#             type_of_industry=type_of_industry,
-#             no_of_employees=no_of_employees,
-#             ceo=ceo,
-#             cfo=cfo,
-#             cmo=cmo,
-#             vp=vp
-#             )
-#             company_profile.save()
-
-#             # Products
-#             product_name = request.POST.get('product_name')
-#             products = Product(
-#                 company_id=company,
-#                 product_name = product_name
-#             )
-#             products.save()
-#             messages.success(request, 'Data saved Successfully')
-#             return redirect('comprehensive_profile')
-#     else:
-#         context ={'company': company,'company_profile': company_profile,'products': products
-#         }
-#         return render(request, 'admin/company_profile_form.html', context)
 
 
 def companyProfileForm(request,id):
@@ -829,6 +755,7 @@ def companyProfileForm(request,id):
             cfo = request.POST.get('cfo')
             cmo = request.POST.get('cmo')
             vp = request.POST.get('vp')
+            date_of_inc = request.POST.get('date_of_inc')
             # Create the CompanyProfile instance and associate it with the Company instance
             company_profile = CompanyProfile(
             company_id=company,  # Associate with the newly created Company instancec
@@ -842,6 +769,20 @@ def companyProfileForm(request,id):
             vp=vp
             )
             company_profile.save()
+
+             # Convert the date_of_inc string to a datetime object
+            date_of_inc_dt = datetime.strptime(date_of_inc, '%Y-%m-%d')
+            today = datetime.now()
+            # Calculate the difference in years between today and date_of_inc_dt
+            years_difference = relativedelta(today, date_of_inc_dt).years
+             # Check if the difference is less than 2 years
+            if years_difference < 2:
+                return redirect('financial_statement',id)  # Redirect to signup page if less than 2 years
+
+            # # Check if the date of incorporation is less than two years from today
+            # if relativedelta(today, date_of_inc_dt).years < 2:
+            #     return redirect('financial_statement')
+
 
             # Products
             # product_name = request.POST.get('product_name')
@@ -865,6 +806,112 @@ def comprehensiveProfile(request,id):
 
     return render(request, 'admin/comprehensive.html', context)
 
+
+def financialStatement(request,id):
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    homogenous_products = HomogenousProduct.objects.filter(company_id = id)
+    heterogenous_products = HeterogenousProduct.objects.filter(company_id = id)
+    context ={'company_profile': company_profile,'homogenous_products':homogenous_products,'heterogenous_products':heterogenous_products}
+
+    return render(request,'admin/financial_statement.html',context)
+
+
+
+
+
+
+#New one
+def revenueVerticals(request, company_id):
+    company_id = Company.objects.get(company_id = company_id)
+    if request.method == 'POST':
+        # Process homogenous products if any
+        homogenous_product_names = request.POST.getlist('homogenous_product_name[]')
+        homogenous_selling_prices = request.POST.getlist('homogenous_selling_price_per_unit[]')
+        homogenous_units_sold = request.POST.getlist('homogenous_units_sold[]')
+        homogenous_growth_rates = request.POST.getlist('homogenous_expected_growth_rate[]')
+
+        for name, price, units, growth in zip(homogenous_product_names, homogenous_selling_prices, homogenous_units_sold, homogenous_growth_rates):
+            if name and price and units and growth:
+                HomogenousProduct.objects.create(
+                   company_id = company_id,
+                product_name = name,
+                selling_price_per_unit = price,
+                units_sold = units,
+                expected_growth_rate = growth
+                )
+
+        # Process heterogenous products if any
+        heterogenous_product_names = request.POST.getlist('heterogenous_product_name[]')
+        heterogenous_expected_revenues = request.POST.getlist('heterogenous_expected_revenue[]')
+        heterogenous_growth_rates = request.POST.getlist('heterogenous_expected_growth_rate[]')
+
+        for name, revenue, growth in zip(heterogenous_product_names, heterogenous_expected_revenues, heterogenous_growth_rates):
+            if name and revenue and growth:
+                HeterogenousProduct.objects.create(
+                    company_id=company_id,
+                    product_name = name,
+                expected_revenue = revenue,
+                expected_growth_rate = growth
+                )
+        
+        return redirect('revenue_verticals',company_id)  # Change to your desired redirect URL
+    else:
+        # Handle GET request or any other logic here
+        company_profile = CompanyProfile.objects.get(company_id = company_id)
+        context ={'company_profile': company_profile}
+        return render(request, 'admin/revenue_verticals.html', context)
+
+
+
+def profitLossBalanceSheetCalculation(request):
+    if request.method == 'POST':
+        company_id = request.POST.get('company_id')
+        revenue_recurring = request.POST.get('revenue_recurring')
+        revenue_one_time = request.POST.get('revenue_one_time')
+        other_income = request.POST.get('other_income')
+        total_income = request.POST.get('total_income')
+
+        cost_of_materials_consumed = request.POST.get('cost_of_materials_consumed')
+        changes_inventories_of_fg_wip = request.POST.get('changes_inventories_of_fg_wip')
+        emp_benefits_expenses = request.POST.get('emp_benefits_expenses')
+        depreciation_amortization_expenses = request.POST.get('depreciation_amortization_expenses')
+        finance_cost = request.POST.get('finance_cost')
+        other_expenses = request.POST.get('other_expenses')
+        total_expenses = request.POST.get('total_expenses')
+
+        profit_before_tax = request.POST.get('profit_before_tax')
+        current_tax_expense = request.POST.get('current_tax_expense')
+        deferred_tax = request.POST.get('deferred_tax')
+        profit_after_tax = request.POST.get('profit_after_tax')
+
+        companyId = Company.objects.get(company_id=company_id)
+
+        profit_loss_balance_sheet = ProfitLossBalanceSheet(
+            company_id = companyId,
+            revenue_recurring = revenue_recurring,
+            revenue_one_time = revenue_one_time,
+            other_income = other_income,
+            total_income = total_income,
+            cost_of_materials_consumed = cost_of_materials_consumed,
+            changes_inventories_of_fg_wip = changes_inventories_of_fg_wip,
+            emp_benefits_expenses = emp_benefits_expenses,
+            depreciation_amortization_expenses = depreciation_amortization_expenses,
+            finance_cost = finance_cost,
+            other_expenses = other_expenses,
+            total_expenses = total_expenses,
+            profit_before_tax = profit_before_tax,
+            current_tax_expense = current_tax_expense,
+            deferred_tax = deferred_tax,
+            profit_after_tax = profit_after_tax
+
+        )
+
+        profit_loss_balance_sheet.save()
+        messages.success(request,'Data Saved Successfully')
+        return redirect('profit_loss_balance_sheet')
+    else:
+        return render(request,'admin/profit_loss_balance_sheet_form.html')
+    
 #Editor
 def editorDashboard(request):
     return render(request,'editor/dashboard.html')
@@ -876,10 +923,10 @@ def parent(request):
     creator_data=User.objects.get(user_id = creator_id)
     context ={'creator_data':creator_data}
     return render(request,'editor/parent.html',context)
+
 #User
 def userDashboard(request):
     return render(request,'user/dashboard.html')
-
 
 #Password Reset 
 import random

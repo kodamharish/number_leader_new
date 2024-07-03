@@ -2,273 +2,272 @@
 
 {% block content %}
 <style>
-    body, html {
-        font-family: 'Arial', sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-        background-color: #E0F4FF;
+    html, body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-image: url('https://t4.ftcdn.net/jpg/06/32/81/03/360_F_632810356_RNAF3Q4egyr8BeqkVfIJ0JZpSHIFOtr9.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; 
+}
+
+    nav {
+        background-color: #fff; /* or any color you prefer */
     }
 
     .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 40px 20px;
+        padding: 60px 20px;
+        background-color: rgba(244, 247, 246, 0.13); /* Semi-transparent background */
     }
 
     .section-title {
         text-align: center;
-        margin-bottom: 40px;
-        color: #333;
-        font-size: 36px;
-        font-weight: bold;
+        font-size: 48px;
+        color: #2c3e50;
+        margin-bottom: 60px;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #d3f2fd, #0478ca);
+        margin: 20px auto 0;
+    }
+
+    .services-overview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 80px;
+    }
+
+    .services-text {
+        flex: 1;
+        padding-right: 50px;
+        color: #1e6ca7;
+    }
+
+    .services-image {
+        flex: 1;
+        text-align: right;
+    }
+
+    .services-image img {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .key-services {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 40px;
-    }
-
-    .key-services h2 {
-        font-size: 24px;
-        color: #333;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .key-services ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .key-services li {
-        background-color: #f8f8f8;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-        display: flex;
-        align-items: flex-start;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    .key-services li:hover {
-        transform: translateY(-5px) scale(1.03);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        background-color: #e8f4ff;
-    }
-
-    .key-services .icon {
-        font-size: 24px;
-        margin-right: 15px;
-        color: #007bff;
-        background-color: #e6f2ff;
-        padding: 10px;
-        border-radius: 50%;
-    }
-
-    .key-services .content {
-        flex: 1;
-    }
-
-    .key-services strong {
-        display: block;
-        font-size: 18px;
-        margin-bottom: 5px;
-        color: #333;
-    }
-
-    .key-services p {
-        margin: 0;
-        color: #666;
-        font-size: 14px;
-    }
-
-    /* Updated Service Cards Styles */
-    .service-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 30px;
+        margin-bottom: 80px;
     }
 
-    .service-card {
-        position: relative;
-        background-color: #fff;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        height: 300px; /* Adjusted height for cards */
+    .key-service-item {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
-    .service-card:hover {
+    .key-service-item:hover {
         transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     }
 
-    .service-card img {
+    .key-service-item i {
+        font-size: 48px;
+        color: #3498db;
+        margin-bottom: 20px;
+    }
+
+    .key-service-item h3 {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+
+    .service-models {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .service-model {
+        width: calc(50% - 15px);
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .model-image {
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .model-image img {
         width: 100%;
-        height: 250px; /* Adjusted height for images */
+        height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
 
-    .service-card:hover img {
+    .service-model:hover .model-image img {
         transform: scale(1.1);
     }
 
-    .service-card-content {
-        padding: 15px;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,1));
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 105px; /* Adjusted height for content */
-        overflow: hidden;
-        transition: height 0.3s ease;
-        text-align: justify; /* Ensures text alignment is justified */
+    .model-content {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
-    .service-card:hover .service-card-content {
-        height: 100%;
-    }
-
-    .service-card h3 {
-        font-size: 18px;
-        color: #333;
-        margin-bottom: 10px;
-        text-align: left; /* Ensures heading is left-aligned */
-    }
-
-    .service-card p {
-        font-size: 14px;
-        color: #666;
+    .model-content h3 {
+        font-size: 24px;
         margin-bottom: 15px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        text-align: justify; /* Ensures text is justified */
+        color: #2c3e50;
     }
 
-    .service-card:hover p {
-        opacity: 1;
+    .model-content p {
+        margin-bottom: 20px;
+        flex-grow: 1;
+        text-align: justify;
     }
 
     .btn {
         display: inline-block;
-        padding: 8px 15px;
-        background-color: #007bff;
+        padding: 10px 20px;
+        background: linear-gradient(90deg, #d3f2fd, #0478ca);
         color: #fff;
         text-decoration: none;
         border-radius: 5px;
-        transition: background-color 0.3s ease;
-        font-size: 14px;
-        font-weight: bold;
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
+        transition: background 0.3s ease;
+        align-self: flex-start;
     }
 
     .btn:hover {
-        background-color: #0056b3;
+        background: linear-gradient(90deg, #0478ca, #d3f2fd);
+    }
+
+    @media (max-width: 1024px) {
+        .services-overview {
+            flex-direction: column;
+        }
+        .services-text, .services-image {
+            width: 100%;
+            padding-right: 0;
+            margin-bottom: 30px;
+        }
+        .service-model {
+            width: 100%;
+        }
     }
 
     @media (max-width: 768px) {
-        .service-grid {
-            grid-template-columns: 1fr;
+        .service-model {
+            width: 100%;
         }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .key-services li.animated {
-        animation: fadeInUp 0.5s ease forwards;
     }
 </style>
 
 <section class="container">
-    <h1 class="section-title">OUR EXPERT SERVICES</h1>
+    <h1 class="section-title">Our Expert Financial Services</h1>
 
-    <div class="key-services">
-        <h2>Our Key Financial Services:</h2>
-        <p>With decades of combined experience, our team encompasses a diverse range of expertise across various sectors of the financial industry. Our services include:</p>
-        <ul>
-            <li>
-                <div class="icon">💼</div>
-                <div class="content">
-                    <strong>CORPORATE FINANCE</strong>
-                    <p>Expert advice on mergers and acquisitions, capital raising, and strategic financial planning.</p>
-                </div>
-            </li>
-            <li>
-                <div class="icon">📈</div>
-                <div class="content">
-                    <strong>ASSET MANAGEMENT</strong>
-                    <p>Tailored investment strategies designed to preserve and grow wealth.</p>
-                </div>
-            </li>
-            <li>
-                <div class="icon">🔍</div>
-                <div class="content">
-                    <strong>MARKET RESEARCH & ANALYSIS</strong>
-                    <p>In-depth market insights to inform investment decisions.</p>
-                </div>
-            </li>
-            <li>
-                <div class="icon">🛡️</div>
-                <div class="content">
-                    <strong>RISK MANAGEMENT</strong>
-                    <p>Comprehensive risk assessment and mitigation strategies.</p>
-                </div>
-            </li>
-        </ul>
+    <div class="services-overview">
+        <div class="services-text">
+            <h2>Empowering Your Financial Future</h2>
+            <p>With decades of combined experience, our team offers a comprehensive range of financial services tailored to meet your unique needs. From corporate finance to asset management, we're here to guide you towards financial success.</p>
+        </div>
+        <div class="services-image">
+            <img src="https://pinnacle-business.com/wp-content/uploads/2018/08/financial.jpg" alt="Financial Services Overview">
+        </div>
     </div>
 
-    <p><b>Some of our key service models also include:-</b></p>
+    <p><b>With decades of combined experience, our team encompasses a diverse range of expertise across various sectors of the financial industry. Our services include:</b></p>
 
-    <div class="service-grid">
-        <div class="service-card">
-            <img src="https://4cornerscfo.com/wp-content/uploads/2023/09/shutterstock_1818068249-920x400.jpg" alt="Virtual CFO Model">
-            <div class="service-card-content">
-                <h3>Virtual CFO Model</h3>
+    <div class="key-services">
+        <div class="key-service-item">
+            <i class="fas fa-chart-line"></i>
+            <h3>Corporate Finance</h3>
+            <p>Expert advice on mergers and acquisitions, capital raising, and strategic financial planning.</p>
+        </div>
+        <div class="key-service-item">
+            <i class="fas fa-coins"></i>
+            <h3>Asset Management</h3>
+            <p>Tailored investment strategies designed to preserve and grow wealth.</p>
+        </div>
+        <div class="key-service-item">
+            <i class="fas fa-search-dollar"></i>
+            <h3>Market Research</h3>
+            <p>In-depth market insights to inform investment decisions.</p>
+        </div>
+        <div class="key-service-item">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Risk Management</h3>
+            <p>Comprehensive risk assessment and mitigation strategies.</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Our Service Models</h2>
+
+    <p><b>Some of our key service models also include:</b></p>
+
+    <div class="service-models">
+        <div class="service-model">
+            <div class="model-image">
+                <img src="https://4cornerscfo.com/wp-content/uploads/2023/09/shutterstock_1818068249-920x400.jpg" alt="Virtual CFO">
+            </div>
+            <div class="model-content">
+                <h3>Virtual CFO</h3>
                 <p>Our Virtual CFO Model provides startups and growing businesses with high-level financial expertise on a flexible basis. This model offers strategic financial planning, budgeting, and cash flow management without the cost of a full-time CFO. By leveraging advanced technology and real-time data, we deliver insightful financial analysis and guidance, empowering our clients to make informed decisions and drive their business forward.</p>
                 <a href="#" class="btn">Learn More</a>
             </div>
         </div>
-        <div class="service-card">
-            <img src="https://images.ctfassets.net/wp1lcwdav1p1/3CTBL1hSCQjACVz3rnT9bn/87d8b7648ec959051aa1b72c0589e6a0/Businessman-pointing-at-executive-during-meeting-641970902_7952x5304.jpeg?w=1500&h=680&q=60&fit=fill&f=faces&fm=jpg&fl=progressive" alt="Management Consultant Model">
-            <div class="service-card-content">
-                <h3>Management Consultant Model</h3>
+        <div class="service-model">
+            <div class="model-image">
+                <img src="https://images.ctfassets.net/wp1lcwdav1p1/3CTBL1hSCQjACVz3rnT9bn/87d8b7648ec959051aa1b72c0589e6a0/Businessman-pointing-at-executive-during-meeting-641970902_7952x5304.jpeg?w=1500&h=680&q=60&fit=fill&f=faces&fm=jpg&fl=progressive" alt="Management Consultant">
+            </div>
+            <div class="model-content">
+                <h3>Management Consultant</h3>
                 <p>Through our Management Consultant Model, we offer comprehensive advisory services that help businesses optimize their operations and enhance their strategic initiatives. Our team of seasoned consultants brings deep industry knowledge and expertise to address complex challenges, streamline processes, and identify growth opportunities. This model ensures that our clients achieve operational excellence and sustained competitive advantage.</p>
                 <a href="#" class="btn">Learn More</a>
             </div>
         </div>
-        <div class="service-card">
-            <img src="https://cdn.create.vista.com/api/media/small/166639502/stock-photo-businessmen-shaking-hands" alt="M&A Model">
-            <div class="service-card-content">
+        <div class="service-model">
+            <div class="model-image">
+                <img src="https://cdn.create.vista.com/api/media/small/166639502/stock-photo-businessmen-shaking-hands" alt="M&A Model">
+            </div>
+            <div class="model-content">
                 <h3>M&A Model</h3>
                 <p>In our M&A Model, we provide expert guidance and support throughout the merger and acquisition process. From identifying potentials to conducting due diligence to negotiating terms and facilitating post-merger integration, our M&A team ensures a seamless and successful transaction for our clients. By leveraging our extensive network, market insights, and strategic expertise, we help businesses identify and capitalize on M&A opportunities that align with their growth objectives.</p>
                 <a href="#" class="btn">Learn More</a>
             </div>
         </div>
-        <div class="service-card">
-            <img src="https://www.liveabout.com/thmb/N2YJ43wCGoOYw2YZ0_7mwUUrNqc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/new-manager-pt-1-56a5dc8b5f9b58b7d0dec90a.jpg" alt="Asset Manager Model">
-            <div class="service-card-content">
-                <h3>Asset Manager Model</h3>
+        <div class="service-model">
+            <div class="model-image">
+                <img src="https://www.liveabout.com/thmb/N2YJ43wCGoOYw2YZ0_7mwUUrNqc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/new-manager-pt-1-56a5dc8b5f9b58b7d0dec90a.jpg" alt="Asset Manager">
+            </div>
+            <div class="model-content">
+                <h3>Asset Manager</h3>
                 <p>The Asset Manager Model focuses on helping clients maximize the value of their assets through strategic management and investment strategies. Our team provides tailored solutions for portfolio management, asset allocation, and performance monitoring. By leveraging our expertise and advanced analytical tools, clients can achieve optimal asset growth, mitigate risks, and enhance their overall financial health.</p>
                 <a href="#" class="btn">Learn More</a>
             </div>
@@ -276,29 +275,5 @@
     </div>
 </section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const services = document.querySelectorAll('.key-services li');
-        
-        function animateServices() {
-            services.forEach((service, index) => {
-                setTimeout(() => {
-                    service.classList.add('animated');
-                }, index * 200); // 200ms delay between each item
-            });
-        }
-
-        // Use Intersection Observer to trigger animation when the section is in view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateServices();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        observer.observe(document.querySelector('.key-services'));
-    });
-</script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 {% endblock content %}

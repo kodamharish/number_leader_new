@@ -1,0 +1,392 @@
+{% block content %}
+<style>
+    /* styles.css */
+    .main-content {
+        margin-left: 290px;
+        padding: 40px;
+        transition: margin-left 0.3s;
+        max-height: 100vh; /* Limit height to the viewport height */
+        overflow-y: auto; /* Add vertical scrollbar */
+    }
+
+    /* General styling for a modern look */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        margin: 0; /* Ensure no default margin */
+        padding: 0; /* Ensure no default padding */
+        box-sizing: border-box; /* Include padding in width calculations */
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .form-group h5 {
+        margin-bottom: 10px;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+    }
+
+    .form-group .input-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .form-group .input-row label {
+        width: 250px;
+        margin-right: 10px; /* Add space between label and input */
+    }
+
+    .form-group .input-row input,
+    .form-group .input-row select {
+        flex: 1;
+        max-width: 600px; /* Increase the width to fit large numbers */
+    }
+
+    .form-group .input-row:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    .product-section {
+        margin-bottom: 30px;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0;
+    }
+
+    .tab-content {
+        padding-top: 20px; /* Add space between tabs and content */
+    }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap's text-danger color */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .btn {
+        margin-right: 5px; /* Space between buttons */
+    }
+
+    /* New styles for three-column layout */
+    .form-container {
+        display: grid;
+        gap: 20px; /* Space between columns */
+        grid-template-columns: 1fr 1fr 1fr; /* Three columns of equal width */
+    }
+
+    .form-container .form-group {
+        margin-bottom: 0; /* Remove bottom margin for grid layout */
+    }
+</style>
+
+{% csrf_token %}
+<!-- {% include './company_profile.html' %} -->
+
+<div class="main-content">
+    <div class="container mt-2">
+        <h4 class="text-center">Variable Costs</h4>
+
+        {% for msg in messages %}
+            <p class="text-danger mt-2 fw-bold text-center">{{ msg }}</p>
+        {% endfor %}
+
+        <ul class="nav nav-pills mt-3" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="pill" href="#home">Revenue</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="pill" href="#menu1">Menu 1</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="pill" href="#menu2">Menu 2</a>
+            </li>
+        </ul>
+
+        
+
+                <form id="revenueForm" method="post" action="#">
+                    {% csrf_token %}
+                    <div id="productTypeDropdown" style="display:none;">
+                        <div class="mt-2">
+                            <select class="form-select" name="type_of_product" id="type_of_product">
+                                <option value="">Select the product</option>
+                                <option value="Homogenous">Product 1</option>
+                                <option value="Heterogenous">Product 2</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="addProduct()">Add</button>
+                    </div>
+                    <div id="dynamicRows" class="mt-3"></div>
+                   
+                <!-- Individual Expense Sections -->
+                <div class="mt-5 form-container">
+                    <h4 class="text-center" style="grid-column: span 3;">Additional Expenses</h4>
+                    
+                    <!-- Factory Cost (per annum) -->
+                    <div class="form-group">
+                        <h5>Factory/ Production Overheads:</h5>
+                        <div class="input-row">
+                            <label for="fc_per_annum_vc">VC Per Unit:</label>
+                            <input type="number" class="form-control" id="fc_per_annum_vc" name="fc_per_annum_vc" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="fc_per_annum_growth_rate">Growth Rate:</label>
+                            <input type="number" class="form-control" id="fc_per_annum_growth_rate" name="fc_per_annum_growth_rate" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="fc_per_annum_nature_of_expense">Nature of Expense:</label>
+                            <select class="form-select" id="fc_per_annum_nature_of_expense" name="fc_per_annum_nature_of_expense" required>
+                                <option value="">Select</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Indirect">Indirect</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Marketing Expenses -->
+                    <div class="form-group">
+                        <h5>Marketing Expenses:</h5>
+                        <div class="input-row">
+                            <label for="marketing_vc">VC Per Unit:</label>
+                            <input type="number" class="form-control" id="marketing_vc" name="marketing_vc" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="marketing_growth_rate">Growth Rate:</label>
+                            <input type="number" class="form-control" id="marketing_growth_rate" name="marketing_growth_rate" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="marketing_nature_of_expense">Nature of Expense:</label>
+                            <select class="form-select" id="marketing_nature_of_expense" name="marketing_nature_of_expense" required>
+                                <option value="">Select</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Indirect">Indirect</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Research & Development -->
+                    <div class="form-group">
+                        <h5>Research & Development:</h5>
+                        <div class="input-row">
+                            <label for="rd_vc">VC Per Unit:</label>
+                            <input type="number" class="form-control" id="rd_vc" name="rd_vc" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="rd_growth_rate">Growth Rate:</label>
+                            <input type="number" class="form-control" id="rd_growth_rate" name="rd_growth_rate" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="rd_nature_of_expense">Nature of Expense:</label>
+                            <select class="form-select" id="rd_nature_of_expense" name="rd_nature_of_expense" required>
+                                <option value="">Select</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Indirect">Indirect</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Office and Administrative Expenses -->
+                    <div class="form-group">
+                        <h5>Office and Administrative Expenses:</h5>
+                        <div class="input-row">
+                            <label for="admin_expenses_vc">VC Per Unit:</label>
+                            <input type="number" class="form-control" id="admin_expenses_vc" name="admin_expenses_vc" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="admin_expenses_growth_rate">Growth Rate:</label>
+                            <input type="number" class="form-control" id="admin_expenses_growth_rate" name="admin_expenses_growth_rate" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="admin_expenses_nature_of_expense">Nature of Expense:</label>
+                            <select class="form-select" id="admin_expenses_nature_of_expense" name="admin_expenses_nature_of_expense" required>
+                                <option value="">Select</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Indirect">Indirect</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Selling Expenses -->
+                    <div class="form-group">
+                        <h5>Selling Expenses:</h5>
+                        <div class="input-row">
+                            <label for="selling_expenses_vc">VC Per Unit:</label>
+                            <input type="number" class="form-control" id="selling_expenses_vc" name="selling_expenses_vc" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="selling_expenses_growth_rate">Growth Rate:</label>
+                            <input type="number" class="form-control" id="selling_expenses_growth_rate" name="selling_expenses_growth_rate" required>
+                        </div>
+                        <div class="input-row">
+                            <label for="selling_expenses_nature_of_expense">Nature of Expense:</label>
+                            <select class="form-select" id="selling_expenses_nature_of_expense" name="selling_expenses_nature_of_expense" required>
+                                <option value="">Select</option>
+                                <option value="Direct">Direct</option>
+                                <option value="Indirect">Indirect</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Save Data</button>
+            </form>
+            
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    let productCount = 3; // Default product count
+
+    // Initialize the form with the default product count
+    document.addEventListener('DOMContentLoaded', () => {
+        addProducts(productCount);
+    });
+
+    function showProductTypeDropdown() {
+        document.getElementById('productTypeDropdown').style.display = 'block';
+    }
+
+    function addProduct() {
+        const productType = document.getElementById('type_of_product').value;
+        if (productType) {
+            productCount++;
+            addProducts(productCount);
+            document.getElementById('type_of_product').value = ''; // Clear the dropdown selection
+        } else {
+            alert('Please select a product type.');
+        }
+    }
+
+    function addProducts(count) {
+        const dynamicRows = document.getElementById('dynamicRows');
+        dynamicRows.innerHTML = ''; // Clear existing rows
+        for (let i = 1; i <= count; i++) {
+            dynamicRows.innerHTML += `
+                <div class="product-section">
+                    <h4>Product ${i}:</h4>
+                    <div class="form-container">
+                        <!-- Material Cost per Unit Section -->
+                        <div class="form-group">
+                            <h5>Material Cost per Unit:</h5>
+                            <div class="input-row">
+                                <label for="vc_per_unit_material_${i}">VC Per Unit:</label>
+                                <input type="number" class="form-control" id="vc_per_unit_material_${i}" name="vc_per_unit_material_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="growth_rate_material_${i}">Growth Rate:</label>
+                                <input type="number" class="form-control" id="growth_rate_material_${i}" name="growth_rate_material_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="nature_of_expense_material_${i}">Nature of Expense:</label>
+                                <select class="form-select" id="nature_of_expense_material_${i}" name="nature_of_expense_material_${i}" required>
+                                    <option value="">Select</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Labour Cost per Unit Section -->
+                        <div class="form-group">
+                            <h5>Labour Cost per Unit:</h5>
+                            <div class="input-row">
+                                <label for="vc_per_unit_labour_${i}">VC Per Unit:</label>
+                                <input type="number" class="form-control" id="vc_per_unit_labour_${i}" name="vc_per_unit_labour_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="growth_rate_labour_${i}">Growth Rate:</label>
+                                <input type="number" class="form-control" id="growth_rate_labour_${i}" name="growth_rate_labour_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="nature_of_expense_labour_${i}">Nature of Expense:</label>
+                                <select class="form-select" id="nature_of_expense_labour_${i}" name="nature_of_expense_labour_${i}" required>
+                                    <option value="">Select</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Other Factory Overheads per Unit Section -->
+                        <div class="form-group">
+                            <h5>Other Factory Overheads per Unit:</h5>
+                            <div class="input-row">
+                                <label for="vc_per_unit_overheads_${i}">VC Per Unit:</label>
+                                <input type="number" class="form-control" id="vc_per_unit_overheads_${i}" name="vc_per_unit_overheads_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="growth_rate_overheads_${i}">Growth Rate:</label>
+                                <input type="number" class="form-control" id="growth_rate_overheads_${i}" name="growth_rate_overheads_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="nature_of_expense_overheads_${i}">Nature of Expense:</label>
+                                <select class="form-select" id="nature_of_expense_overheads_${i}" name="nature_of_expense_overheads_${i}" required>
+                                    <option value="">Select</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Selling Expenses per Unit Section -->
+                        <div class="form-group">
+                            <h5>Selling Expenses per Unit:</h5>
+                            <div class="input-row">
+                                <label for="vc_per_unit_selling_${i}">VC Per Unit:</label>
+                                <input type="number" class="form-control" id="vc_per_unit_selling_${i}" name="vc_per_unit_selling_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="growth_rate_selling_${i}">Growth Rate:</label>
+                                <input type="number" class="form-control" id="growth_rate_selling_${i}" name="growth_rate_selling_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="nature_of_expense_selling_${i}">Nature of Expense:</label>
+                                <select class="form-select" id="nature_of_expense_selling_${i}" name="nature_of_expense_selling_${i}" required>
+                                    <option value="">Select</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Any Other Expenses per Unit Section -->
+                        <div class="form-group">
+                            <h5>Any Other Expenses per Unit:</h5>
+                            <div class="input-row">
+                                <label for="vc_per_unit_other_${i}">VC Per Unit:</label>
+                                <input type="number" class="form-control" id="vc_per_unit_other_${i}" name="vc_per_unit_other_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="growth_rate_other_${i}">Growth Rate:</label>
+                                <input type="number" class="form-control" id="growth_rate_other_${i}" name="growth_rate_other_${i}" required>
+                            </div>
+                            <div class="input-row">
+                                <label for="nature_of_expense_other_${i}">Nature of Expense:</label>
+                                <select class="form-select" id="nature_of_expense_other_${i}" name="nature_of_expense_other_${i}" required>
+                                    <option value="">Select</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+</script>
+
+{% endblock content %}

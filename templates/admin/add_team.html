@@ -53,7 +53,6 @@
                     <label for="company">Company</label>
                     <select class="form-select w-50" id="company" name="company" required>
                         
-
                         {% if current_user_companies %}
                         {% for company in current_user_companies %}
                         <option value="{{ company.company_id }}">{{ company.company_name }}</option>

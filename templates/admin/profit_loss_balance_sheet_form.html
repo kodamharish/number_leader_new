@@ -1,0 +1,132 @@
+{% extends '../base.html' %} {% block content %}
+<style>
+    label{
+        width:300px !important;
+        
+    }
+</style>
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Profit and Loss</h4>
+            {% for msg in messages %}
+            <p class="text-danger mt-2 fw-bold text-center">{{msg}}</p>
+            {% endfor %}
+            <div class="col-md-6">
+            <h4 class="mt-4 mb-5 text-center">Income</h4>
+
+            <div class="mb-3 mt-3 inline">
+                <label for="company_id">Company</label>
+                <select class="form-select w-50" id="company_id" name="company_id" required>
+                    
+                    {% if current_user_companies %}
+                    {% for company in current_user_companies %}
+                    <option value="{{ company.company_id }}">{{ company.company_name }}</option>
+                    {% endfor %}
+                    
+                    {% endif %}
+                </select>
+            </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="revenue_recurring">Revenue from Operations - Recurring</label>
+                    <input type="number" class="form-control w-50" name="revenue_recurring" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="revenue_one_time">Revenue from Operations - One Time</label>
+                    <input type="number" class="form-control w-50" name="revenue_one_time" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="other_income">Other Income</label>
+                    <input type="number" class="form-control w-50" name="other_income" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="total_income">Total Income</label>
+                    <input type="number" class="form-control w-50" name="total_income" required>
+                </div>
+                
+            </div>
+
+            <div class="col-md-6">
+            <h4 class="mt-4 mb-5 text-center">Expenses</h4>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="cost_of_materials_consumed">Cost of materials Consumed</label>
+                    <input type="number" class="form-control w-50" name="cost_of_materials_consumed" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="changes_inventories_of_fg_wip">Changes in inventories of FG & WIP </label>
+                    <input type="number" class="form-control w-50" name="changes_inventories_of_fg_wip" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="emp_benefits_expenses">Employee Benefits Expenses</label>
+                    <input type="number" class="form-control w-50" name="emp_benefits_expenses" required>
+                </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="depreciation_amortization_expenses">Depreciation and Amortization Expenses</label>
+                    <input type="number" class="form-control w-50" name="depreciation_amortization_expenses" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="finance_cost">Finance Costs</label>
+                    <input type="number" class="form-control w-50" name="finance_cost" required>
+                </div>
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="other_expenses">Other Expenses</label>
+                    <input type="number" class="form-control w-50" name="other_expenses" required>
+                </div>
+                
+
+                <div class="mb-3 mt-3 inline">
+                    <label for="total_expenses">Total Expenses</label>
+                    <input type="number" class="form-control w-50" name="total_expenses" required>
+                </div>
+                
+            </div>
+           
+        </div>
+
+
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Tax </h4>
+            
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="profit_before_tax">Profit Before Tax</label>
+                    <input type="number" class="form-control w-50" name="profit_before_tax" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="current_tax_expense">Current Tax Expense</label>
+                    <input type="number" class="form-control w-50" name="current_tax_expense" required>
+                </div>
+                
+                
+            </div>
+
+            <div class="col-md-6">
+                
+                <div class="mb-3 mt-3 inline">
+                    <label for="deferred_tax">Deferred Tax</label>
+                    <input type="number" class="form-control w-50" name="deferred_tax" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="profit_after_tax">Profit After Tax</label>
+                    <input type="number" class="form-control w-50" name="profit_after_tax" required>
+                </div>
+                
+            </div>
+
+            
+           
+        </div>
+
+        <div class="text-center mt-5 mb-3">
+            <button type="submit" class="btn btn-secondary border-radius pl pr mb-3" style="width:15%">Submit</button>
+        </div>
+    </form>
+
+
+</div>
+{% endblock content %}
