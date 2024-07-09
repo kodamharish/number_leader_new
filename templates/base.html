@@ -100,8 +100,8 @@
                 {% for company in current_user_companies %}
                   <li>
                     <a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
-                       data-company-name="{{ company.company_name }}">
-                      {{ company.company_name }} 
+                       data-company-name="{{ company.name }}">
+                      {{ company.name }} 
                       {% if current_user_company_profiles%}
                       <a href="{% url 'update_company' company.company_id %}"> - Update</a>
                       {% endif %}
@@ -123,14 +123,14 @@
             <a class="nav-link" href="#"> Enablers</a> <!-- ca firm -->
             
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="#">Originator</a></li>
               <li><a class="dropdown-item" href="{% url 'my_team' %}">Associates</a></li>
 
             </ul>
-          </li>
+          </li> -->
 
 
           {% endif %}
@@ -152,7 +152,7 @@
               {% if current_user_companies %}
               {% for company in current_user_companies %}
               <li><a class="dropdown-item company-select" href="#" data-company-id="{{ company.company_id }}"
-                  data-company-name="{{ company.company_name }}">{{ company.company_name }}</a></li>
+                  data-company-name="{{ company.name }}">{{ company.name }}</a></li>
               {% endfor %}
               {% endif %}
             </ul>
@@ -196,13 +196,13 @@
 
           <!-- User -->
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a>
-          </li>
+          </li> -->
         </ul>
       </div>
 
-      <div style="margin:0px 15px;display:inline-flex">
+      <!-- <div style="margin:0px 15px;display:inline-flex">
         <a class="navbar-brand" href="#">
           <img src="{% static 'images/img_avatar.png' %}" alt="logo" style="width:40px;" class="rounded-pill">
         </a>
@@ -226,10 +226,44 @@
             {% endif %}
           </b> <br>
 
-          <!-- User Type : <b>{{ current_user.user_type }}</b> <br> -->
+          
 
         </p>
-      </div>
+      </div> -->
+
+
+
+      {% if current_user or current_subuser %}
+          <div class="user-info">
+            <img src="{% static 'images/img_avatar.png' %}" alt="User Avatar" class="user-avatar">
+            <div class="user-dropdown">
+              <div class="user-details">
+                <p>
+                  {% if current_user %}
+                    {{ current_user.username }} ({{ current_user.user_type }})
+                  {% elif current_subuser %}
+                    {{ current_subuser.username }} ({{ current_subuser.user_type }})
+                  {% endif %}
+                </p>
+                <p>
+                  {% if current_user %}
+                    {{ current_user.company_type }}
+                  {% elif current_subuser %}
+                    {{ current_user.company_type }}
+                  {% endif %}
+                </p>
+              </div>
+              <div class="user-actions">
+                <a href="{% url 'my_team' %}" class="user-action-link">
+                  <i class="fas fa-users"></i> My Team
+                </a>
+                <a href="{% url 'logout' %}" class="user-action-link logout-link">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       {% endif %}
     </div>
   </nav>

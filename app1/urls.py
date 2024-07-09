@@ -36,12 +36,21 @@ urlpatterns = [
     
     #company
     path('add_company',addCompany,name='add_company'), 
-    path('update_company/<str:company_id>/', updateCompany, name='update_company'),
+    path('update_company/<str:id>/', updateCompany, name='update_company'),
     path('comprehensive_profile/<str:id>/', comprehensiveProfile, name='comprehensive_profile'),
     path('company_profile/<str:id>/',companyProfile,name='company_profile'),
     path('company_profile_form/<str:id>/',companyProfileForm,name='company_profile_form'),
+
+    path('business_plan/<str:id>/',businessPlan,name='business_plan'),
+    path('basic_information/<str:id>/',basicInformation,name='basic_information'),
+
+
+
+
     path('financial_statement/<str:id>/',financialStatement,name='financial_statement'),
     path('revenue_verticals/<str:company_id>/',revenueVerticals,name='revenue_verticals'),
+    path('expenses/<str:company_id>/',expenses,name='expenses'),
+
 
     #children
     path('my_team',myTeam,name='my_team'),

@@ -1,0 +1,556 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Name</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #dee3e9;
+            --hover-color: #cde7f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0 2rem;
+        }
+
+        header {
+            background: url('https://png.pngtree.com/background/20210709/original/pngtree-hd-abstract-tech-background-picture-image_578452.jpg') no-repeat center center / cover;
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-text h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1,
+        h2 {
+            color: #ffffff !important;
+
+        }
+
+        .header-text p {
+            margin: 0.5rem 0;
+        }
+
+       /* .header-text {
+            flex: 1;
+        }
+            */
+
+        .header-text a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .header-video {
+            width: 500px;
+            max-width: 100%;
+        }
+
+        .header-video video {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .contact-info {
+            text-align: right;
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info i {
+            margin-right: 0.5rem;
+        }
+
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color) !important;
+            font-weight: bold;
+        }
+
+        .founders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .founder-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.807);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .founder-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .founder-image {
+            height: 380px;
+            overflow: hidden;
+        }
+
+        .founder-image img {
+            width: 100%;
+            height: 110%;
+            object-fit: cover;
+        }
+
+        .founder-info {
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .founder-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .founder-social {
+            margin-top: 1rem;
+        }
+
+        .founder-social a {
+            color: var(--primary-color);
+            margin: 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .vision-mission {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .vision,
+        .mission {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 0.8rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.488);
+        }
+
+        .vision img,
+        .mission img {
+            width: 45%;
+            height: 280px;
+            border-radius: 15px;
+            padding-left: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .vision {
+            flex-direction: row;
+        }
+
+        .vision h2,
+        .vision p,
+        .mission h2,
+        .mission p {
+            width: 50%;
+            padding: 0 2rem;
+        }
+
+        .mission {
+            flex-direction: row-reverse;
+        }
+
+        @media (max-width: 768px) {
+
+            .vision,
+            .mission {
+                flex-direction: column;
+            }
+
+            .vision img,
+            .mission img {
+                width: 100%;
+            }
+
+            .vision h2,
+            .vision p,
+            .mission h2,
+            .mission p {
+                width: 100%;
+                padding: 0;
+            }
+        }
+
+
+        .card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .usp {
+            background: url('https://png.pngtree.com/background/20210709/original/pngtree-hd-abstract-tech-background-picture-image_578452.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .usp::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .usp-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .clients {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .client-logo {
+            width: 150px;
+            height: 150px;
+            margin: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.727);
+        }
+
+        .client-logo:hover {
+            transform: scale(1.1);
+            background-color: var(--hover-color);
+        }
+
+        .client-logo img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .client-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .client-arrow.left {
+            left: 10px;
+        }
+
+        .client-arrow.right {
+            right: 10px;
+        }
+
+        .social-media {
+            margin-top: 1rem;
+        }
+
+        .social-media a {
+            color: white;
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .social-media a:hover {
+            color: var(--hover-color);
+        }
+
+        @media (max-width: 768px) {
+
+            .header-content,
+            .vision-mission {
+                flex-direction: column;
+            }
+
+            .header-video {
+                width: 100%;
+                margin-top: 2rem;
+            }
+
+            .contact-info {
+                position: static;
+                text-align: left;
+                margin-top: 1rem;
+            }
+        }
+
+        .tagline {
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 290px;
+            /* Adjust according to sidebar width */
+            padding: 40px;
+            /* Reduce padding for a cleaner look */
+            transition: margin-left 0.3s;
+            /* Smooth transition for sidebar width changes */
+
+            /* Reduce padding for a cleaner look */
+            height: calc(100vh);
+            /* Full height minus header/footer or any other elements */
+            overflow-y: auto;
+            /* Enable vertical scrolling if content exceeds height */
+
+        }
+    </style>
+</head>
+
+<body>
+    {% include './company_profile.html' %}
+    <div class="main-content">
+        <header>
+            <div class="container header-content">
+                <div class="header-text">
+                    <h1>{{company.name}}</h1>
+                    <p>{{company_profile.sector}}</p>
+                    <p><a href="https://www.iiiqbets.com/" target="_blank">www.iiiqbets.com</a></p>
+                    <!-- <p class="tagline"><b>Innovating for a smarter tomorrow</b></p> -->
+                </div>
+                <div class="header-right">
+                    <div class="header-video" id="header-video">
+                        <video controls id="video">
+                            <source
+                                src="{% static company_profile.business_introductory_video_file.url %}"
+                                type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="social-media">
+                        <a href="#" id="social-media-1"><i class="fab fa-facebook"></i></a>
+                        <a href="#" id="social-media-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" id="social-media-3"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" id="social-media-3"><i class="fab fa-instagram"></i></a>
+
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="section">
+                <h2 class="section-title">Meet the our Founders</h2>
+                <div class="founders">
+
+                    {% for founder in founders %}
+
+                    <div class="founder-card">
+                        <div class="founder-image">
+                            <img src="{% static founder.photo.url %}" alt="Founder 1">
+                        </div>
+                        <div class="founder-info">
+                            <h3>{{founder.name}}</h3>
+                            <p>Machine Learning Specialist & CEO</p>
+                            <p>{{founder.short_profile}}</p>
+                            <p>Email: <a href="{{founder.email}}">{{founder.email}}</a></p>
+                            <div class="founder-social">
+                                <a href="{{founder.linkedin_url}}"><i class="fab fa-linkedin"></i></a>
+                                <a href="{{founder.email}}"><i class="fas fa-envelope"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                    <!-- <div class="founder-card">
+                        <div class="founder-image">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                                alt="Founder 2">
+                        </div>
+                        <div class="founder-info">
+                            <h3>Alex Chen</h3>
+                            <p>Cybersecurity Expert & CTO</p>
+                            <p>Safeguarding digital frontiers with cutting-edge solutions</p>
+                            <p>Email: <a href="mailto:founder2@example.com">founder2@example.com</a></p>
+                            <div class="founder-social">
+                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                                <a href="#"><i class="fas fa-envelope"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="founder-card">
+                        <div class="founder-image">
+                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                                alt="Founder 3">
+                        </div>
+                        <div class="founder-info">
+                            <h3>Sophia Patel</h3>
+                            <p>Data Science Innovator & COO</p>
+                            <p>Transforming raw data into actionable business strategies</p>
+                            <p>Email: <a href="mailto:founder3@example.com">founder3@example.com</a></p>
+                            <div class="founder-social">
+                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                                <a href="#"><i class="fas fa-envelope"></i></a>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </section>
+
+            <section class="section vision-mission">
+                <h2 class="section-title">Our Vision and Mission</h2>
+                <div class="vision">
+                    <p id="vision">{{company_profile.vision}}</p>
+                    <img src="https://img.freepik.com/premium-photo/compass-with-needle-pointing-word-vision-with-blur-effect-plus-blue-black-tones-conceptual-image-immustration-company-business-anticipation-strategy_556904-1981.jpg"
+                        alt="Vision" class="card-image">
+                </div>
+                <div class="mission">
+                    <p id="mission">{{company_profile.mission}}</p>
+                    <img src="https://img.freepik.com/free-photo/3d-rendering-arrow-hitting-target_23-2151266523.jpg"
+                        alt="Mission" class="card-image">
+                </div>
+            </section>
+
+            <section class="usp">
+                <div class="usp-content">
+                    <h2>Unique Selling Proposition (USP)</h2>
+                    <p id="usp">{{company_profile.usp}}
+                    </p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Our Valued Clients</h2>
+                <div class="clients">
+                    <div class="client-arrow left"><i class="fas fa-chevron-left"></i></div>
+                    {% for client in clients %}
+
+                    <div class="client-logo">
+                        <img src="{% static client.logo.url %}" alt="logo">
+                    </div>
+
+                    {% endfor %}
+                    <!-- <div class="client-logo">
+                        <img src="https://sp-ao.shortpixel.ai/client/q_lossless,ret_img/https://www.iiiqbets.com/wp-content/uploads/2021/04/microsoftazure_86_logo_1594894843_phmzk.png"
+                            alt="Client 1">
+                    </div>
+                    <div class="client-logo">
+                        <img src="https://sp-ao.shortpixel.ai/client/q_lossless,ret_img/https://www.iiiqbets.com/wp-content/uploads/2021/04/GoogleAI_logo_horizontal_color_rgb.png"
+                            alt="Client 2">
+                    </div>
+                    <div class="client-logo">
+                        <img src="https://sp-ao.shortpixel.ai/client/q_lossless,ret_img/https://www.iiiqbets.com/wp-content/uploads/2021/04/php_PNG46.png"
+                            alt="Client 3">
+                    </div>
+                    <div class="client-logo">
+                        <img src="https://sp-ao.shortpixel.ai/client/q_lossless,ret_img/https://www.iiiqbets.com/wp-content/uploads/2021/04/Power-BI-logo-nieuw-ZWART.png"
+                            alt="Client 4">
+                    </div>
+                    <div class="client-logo">
+                        <img src="https://sp-ao.shortpixel.ai/client/q_lossless,ret_img/https://www.iiiqbets.com/wp-content/uploads/2021/04/google-analytics.png"
+                            alt="Client 5">
+                    </div> -->
+                    <div class="client-arrow right"><i class="fas fa-chevron-right"></i></div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+    <script>
+        document.getElementById('video').addEventListener('play', function () {
+            document.getElementById('header-video').classList.add('fullscreen');
+        });
+
+        document.getElementById('video').addEventListener('pause', function () {
+            document.getElementById('header-video').classList.remove('fullscreen');
+        });
+
+        document.getElementById('video').addEventListener('ended', function () {
+            document.getElementById('header-video').classList.remove('fullscreen');
+        });
+    </script>
+</body>
+
+</html>
+{% endblock content %}

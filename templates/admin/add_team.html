@@ -55,7 +55,7 @@
                         
                         {% if current_user_companies %}
                         {% for company in current_user_companies %}
-                        <option value="{{ company.company_id }}">{{ company.company_name }}</option>
+                        <option value="{{ company.company_id }}">{{ company.name }}</option>
                         {% endfor %}
                         
                         {% endif %}

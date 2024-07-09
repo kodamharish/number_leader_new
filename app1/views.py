@@ -6,6 +6,10 @@ from django.core.paginator import Paginator
 from .context_processors import custom_user,custom_subuser
 from datetime import datetime,timedelta
 from dateutil.relativedelta import relativedelta
+#File Handling
+from django.utils.deconstruct import deconstructible
+from django.core.files.storage import FileSystemStorage
+import os
 
 #Mail Configuration
 from django.core.mail import send_mail
@@ -81,7 +85,7 @@ def login1(request):
                 request.session['current_user_id'] = user.user_id
                 if remember_me:
                     request.session.set_expiry(86400)  # 1 day
-                    return redirect('admin_dashboard')
+                    # return redirect('admin_dashboard')
 
                 else:
                     request.session.set_expiry(0)  # Browser close
@@ -191,28 +195,24 @@ def signup(request):
         company_linkedin_url = request.POST.get('company_linkedin_url')
         subscription_type = request.POST.get('subscription_type')
         company_type = request.POST.get('company_type')
-
-
-        
         # Founders Details
-        founder_name = request.POST.get('founder_name')
+        founder_fname = request.POST.get('founder_lname')
+        founder_lname = request.POST.get('founder_lname')
+        founder_fullname = founder_fname + founder_lname
         founder_email = request.POST.get('founder_email')
         founder_linkedin_url = request.POST.get('founder_linkedin_url')
         founder_phone_number = request.POST.get('founder_phone_number')
-        
         # Validate passwords
         if password != confirm_password:
             messages.error(request,'Passwords do not match')
-            return redirect('sign_up')
-            
+            return redirect('signup')    
         # Validate if the username or email already exists
         if User.objects.filter(username=username).exists() or Team.objects.filter(username=username).exists():
             messages.error(request,'Username already exists')
-            return redirect('sign_up')
-            
+            return redirect('signup')    
         if User.objects.filter(email=email).exists() or Team.objects.filter(email=email).exists():
             messages.error(request,'Email already exists')
-            return redirect('sign_up')
+            return redirect('signup')
             
         # Create and save User object
         user = User(
@@ -233,14 +233,10 @@ def signup(request):
             # Create and save Company object
             company = Company(
                 user_id=user,  # This should match the foreign key field in Company model
-                company_name=company_name,
-                company_email=company_email,
-                company_website_url=company_website_url,
-                company_linkedin_url=company_linkedin_url,
-                founder_name=founder_name,
-                founder_email=founder_email,
-                founder_linkedin_url=founder_linkedin_url,
-                founder_phone_number=founder_phone_number,
+                name=company_name,
+                email=company_email,
+                website_url=company_website_url,
+                linkedin_url=company_linkedin_url,
                 subscription_type = subscription_type
                 
             )
@@ -249,6 +245,15 @@ def signup(request):
 
             # Ensure the company was saved correctly
             if company.pk:
+                company_id = Company.objects.get(company_id = company.pk)
+                founder =Founder(
+                    company_id = company_id,
+                    name=founder_fullname,
+                    email=founder_email,
+                    linkedin_url=founder_linkedin_url,
+                    phone_number=founder_phone_number,
+                )
+                founder.save()
                 messages.error(request,'User Created Succesfully')
                 return redirect('signup')
                 
@@ -332,6 +337,7 @@ def users(request):
 
 
 #Admin
+
 def myTeam(request):
     if request.method == 'POST':
         pass          
@@ -433,7 +439,7 @@ def addTeam(request):
 
                You can Login by using below this URL : {}        
                 '''
-        message=txt.format(firstname,lastname,email,username,password,phone_number,linkedin_url,user_type,company_id.company_name,signin_url)
+        message=txt.format(firstname,lastname,email,username,password,phone_number,linkedin_url,user_type,company_id.name,signin_url)
         from_email=settings.EMAIL_HOST_USER
         to_list=[email]
         send_mail(subject, message,from_email,to_list,fail_silently=True)
@@ -546,86 +552,195 @@ def deleteTeam(request,id):
 def adminDashboard(request):
     return render(request,'admin/dashboard.html')
 
+
+
+# def addCompany(request):
+#     if request.method == 'POST':
+#         # Extract company profile data
+#         startup_name = request.POST.get('startup_name')
+#         sector = request.POST.get('sector')
+#         subscription_type = request.POST.get('subscription_type')
+#         website_url = request.POST.get('website_url')
+#         business_introductory_video = request.FILES.get('business_introductry_video')
+#         business_plan = request.FILES.get('business_plan')
+#         vision = request.POST.get('vision')
+#         mission = request.POST.get('mission')
+#         usp = request.POST.get('usp')
+
+#         user_context = custom_user(request)
+#         current_user = user_context.get('current_user') 
+
+#         # Create the Company instance
+#         company = Company(
+#                 user_id=current_user,  # This should match the foreign key field in Company model
+#                 name=startup_name,
+#                 # company_email=company_email,
+#                 website_url=website_url,
+#                 # linkedin_url=linkedin_url,
+#                 subscription_type=subscription_type,
+#             )
+#         company.save()
+#         company_profile = CompanyProfile(
+#             company_id = company,
+#             sector=sector,
+#             business_introductory_video = business_introductory_video,
+#             business_plan = business_plan,
+#             vision = vision,
+#             mission = mission,
+#             usp = usp
+#         )
+#         company_profile.save()
+
+#         # Save founders
+#         founder_count = int(request.POST.get('founder_count', 1))
+#         for i in range(1, founder_count + 1):
+#             founder_name = request.POST.get(f'founder{i}_name')
+#             linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+#             short_profile = request.POST.get(f'founder{i}_short_profile')
+#             phone_no = request.POST.get(f'founder{i}_phone_no')
+#             email = request.POST.get(f'founder{i}_email')
+#             photo = request.FILES.get(f'founder{i}_photo')
+#             if founder_name and linkedin_profile and short_profile and phone_no and email and photo:
+#                 founder = Founder(
+#                     company_id=company,
+#                     name=founder_name,
+#                     linkedin_url=linkedin_profile,
+#                     short_profile=short_profile,
+#                     phone_number=phone_no,
+#                     email=email,
+#                     photo=photo
+#                 )
+#                 founder.save()
+
+#         # Save social media URLs
+#         url_count = int(request.POST.get('url_count', 2))
+#         for i in range(1, url_count + 1):
+#             url = request.POST.get(f'url_{i}')
+#             if url:
+
+#                 socail_media = SocialMedia(
+#                     company_id=company,
+#                     url=url
+#                 )
+#                 socail_media.save()
+
+#         # Save clients
+#         client_count = int(request.POST.get('client_count', 2))
+#         for i in range(1, client_count + 1):
+#             client_name = request.POST.get(f'client_{i}')
+#             client_logo = request.POST.get(f'client_{i}_logo')
+
+#             if client_name:
+                
+#                 client = Client(
+#                     company_id=company,
+#                     name=client_name,
+#                     logo = client_logo
+#                 )
+#                 client.save()
+
+#         return redirect('add_company')  # Redirect to a success page
+#     else:
+#         return render(request, 'admin/add_company.html')
+
+
+
 def addCompany(request):
     if request.method == 'POST':
-        # Company Details
-        user_id = request.POST.get('user_id')
-        company_name = request.POST.get('company_name')
-        company_email = request.POST.get('company_email')
-        company_website_url = request.POST.get('company_website_url')
-        company_linkedin_url = request.POST.get('company_linkedin_url')
-        subscription_type = request.POST.get('subscription_type') 
-        # Founders Details
-        founder_name = request.POST.get('founder_name')
-        founder_email = request.POST.get('founder_email')
-        founder_linkedin_url = request.POST.get('founder_linkedin_url')
-        founder_phone_number = request.POST.get('founder_phone_number')
+        # Extract company profile data
+        startup_name = request.POST.get('startup_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video_file = request.FILES.get('business_introductry_video_file')
+        business_introductory_video_url = request.POST.get('business_introductry_video_url')
+
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
+
         user_context = custom_user(request)
-        current_user = user_context.get('current_user')  
-
-        # Company profile
-        excecutive_summary = request.POST.get('excecutive_summary')
-        technology_profile = request.POST.get('technology_profile')
-        type_of_industry = request.POST.get('type_of_industry')
-        no_of_employees = request.POST.get('no_of_employees')
-        ceo = request.POST.get('ceo')
-        cfo = request.POST.get('cfo')
-        cmo = request.POST.get('cmo')
-        vp = request.POST.get('vp')
-
-        # Products
-        product_name = request.POST.get('product_name')
-
-        # Fetch the User instance for the creator_id
-        #creator_user = User.objects.get(user_id=current_user.user_id)
+        current_user = user_context.get('current_user') 
 
         # Create the Company instance
         company = Company(
-                user_id=current_user,  # This should match the foreign key field in Company model
-                company_name=company_name,
-                company_email=company_email,
-                company_website_url=company_website_url,
-                company_linkedin_url=company_linkedin_url,
-                subscription_type=subscription_type,
-                founder_name=founder_name,
-                founder_email=founder_email,
-                founder_linkedin_url=founder_linkedin_url,
-                founder_phone_number=founder_phone_number,
-            )
+            user_id=current_user,  # This should match the foreign key field in Company model
+            name=startup_name,
+            website_url=website_url,
+            subscription_type=subscription_type,
+        )
         company.save()
 
-        # Create the CompanyProfile instance and associate it with the Company instance
+        # Create the CompanyProfile instance
         company_profile = CompanyProfile(
-            company_id=company,  # Associate with the newly created Company instancec
-            excecutive_summary=excecutive_summary,
-            technology_profile=technology_profile,
-            type_of_industry=type_of_industry,
-            no_of_employees=no_of_employees,
-            ceo=ceo,
-            cfo=cfo,
-            cmo=cmo,
-            vp=vp
+            company_id=company,
+            sector=sector,
+            business_introductory_video_file=business_introductory_video_file,
+            business_introductory_video_url=business_introductory_video_url,
+            business_plan=business_plan,
+            vision=vision,
+            mission=mission,
+            usp=usp
         )
         company_profile.save()
 
-        products = Product(
-            company_id=company,
-            product_name = product_name
-        )
-        products.save()
-        messages.success(request, 'Data saved Successfully')
-        return redirect('add_company')
+        # Save founders
+        founder_count = int(request.POST.get('founder_count', 1))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+            if founder_name and linkedin_profile and short_profile and phone_no and email and photo:
+                founder = Founder(
+                    company_id=company,
+                    name=founder_name,
+                    linkedin_url=linkedin_profile,
+                    short_profile=short_profile,
+                    phone_number=phone_no,
+                    email=email,
+                    photo=photo
+                )
+                founder.save()
+
+        # Save social media URLs
+        url_count = int(request.POST.get('url_count', 2))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            if url:
+                social_media = SocialMedia(
+                    company_id=company,
+                    url=url
+                )
+                social_media.save()
+
+        # Save clients
+        client_count = int(request.POST.get('client_count', 1))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            client_logo = request.FILES.get(f'client_{i}_logo')
+            if client_name and client_logo:
+                client = Client(
+                    company_id=company,
+                    name=client_name,
+                    logo=client_logo
+                )
+                client.save()
+
+        return redirect('add_company')  # Redirect to a success page
     else:
         return render(request, 'admin/add_company.html')
 
 
-
-def updateCompany(request, company_id):
+def updateCompanyOld(request, company_id):
     if request.method == 'POST':
         # Fetch existing company and profile
         company = get_object_or_404(Company, company_id=company_id)
         company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
-        #products = get_object_or_404(Product, company_id=company_id)
+        
 
         
         # Company Details
@@ -651,13 +766,12 @@ def updateCompany(request, company_id):
         company_profile.cmo = request.POST.get('cmo')
         company_profile.vp = request.POST.get('vp')
 
-        # Products
-        #products.product_name = request.POST.get('product_name')
+        
         
         # Save the updates
         company.save()
         company_profile.save()
-        #products.save()
+        
 
         messages.success(request, 'Data updated successfully')
         return redirect('update_company', company_id=company_id)
@@ -665,14 +779,7 @@ def updateCompany(request, company_id):
         # Fetch existing company and profile for initial form rendering
         company = get_object_or_404(Company, company_id=company_id)
         company_profile = get_object_or_404(CompanyProfile, company_id=company_id)
-        #products = get_object_or_404(Product, company_id=company_id)
-
         
-        # context = {
-        #     'company': company,
-        #     'company_profile': company_profile,
-        #     'products':products
-        # }
 
         context = {
             'company': company,
@@ -685,61 +792,426 @@ def updateCompany(request, company_id):
 
 
 
-
-def companyProfile(request, id):
-    company = get_object_or_404(Company, company_id=id)
-    try:
-        company_profile = CompanyProfile.objects.get(company_id=id)
-    except CompanyProfile.DoesNotExist:
-        company_profile = None
-
-    try:
-        products = Product.objects.filter(company_id=id)
-    except Product.DoesNotExist:
-        products = None
+def updateCompany_ref(request,id):
+    company = Company.objects.get(company_id = id)
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    founders = Founder.objects.filter(company_id = id)
+    clients = Client.objects.filter(company_id = id)
+    socail_media_urls = SocialMedia.objects.filter(company_id = id)
 
     if request.method == 'POST':
-            # Company profile
-            excecutive_summary = request.POST.get('excecutive_summary')
-            technology_profile = request.POST.get('technology_profile')
-            type_of_industry = request.POST.get('type_of_industry')
-            no_of_employees = request.POST.get('no_of_employees')
-            ceo = request.POST.get('ceo')
-            cfo = request.POST.get('cfo')
-            cmo = request.POST.get('cmo')
-            vp = request.POST.get('vp')
-            # Create the CompanyProfile instance and associate it with the Company instance
-            company_profile = CompanyProfile(
-            company_id=company,  # Associate with the newly created Company instancec
-            excecutive_summary=excecutive_summary,
-            technology_profile=technology_profile,
-            type_of_industry=type_of_industry,
-            no_of_employees=no_of_employees,
-            ceo=ceo,
-            cfo=cfo,
-            cmo=cmo,
-            vp=vp
-            )
-            company_profile.save()
+        # Extract company profile data
+        startup_name = request.POST.get('startup_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video = request.FILES.get('business_introductry_video')
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
 
-            # Products
-            product_name = request.POST.get('product_name')
-            products = Product(
-                company_id=company,
-                product_name = product_name
+        user_context = custom_user(request)
+        current_user = user_context.get('current_user')
+        # Create the Company instance
+        company = Company(
+                user_id=current_user,  # This should match the foreign key field in Company model
+                name=startup_name,
+                # company_email=company_email,
+                website_url=website_url,
+                # linkedin_url=linkedin_url,
+                subscription_type=subscription_type,
             )
-            products.save()
-            messages.success(request, 'Data saved Successfully')
-            return redirect('comprehensive_profile')
+        company.save()
+        company_profile = CompanyProfile(
+            company_id = id,
+            sector=sector,
+            business_introductory_video = business_introductory_video,
+            business_plan = business_plan,
+            vision = vision,
+            mission = mission,
+            usp = usp
+        )
+        company_profile.save()
+
+        # Save founders
+        founder_count = int(request.POST.get('founder_count', 1))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+            if founder_name and linkedin_profile and short_profile and phone_no and email and photo:
+                founder = Founder(
+                    company_id=id,
+                    name=founder_name,
+                    linkedin_url=linkedin_profile,
+                    short_profile=short_profile,
+                    phone_number=phone_no,
+                    email=email,
+                    photo=photo
+                )
+                founder.save()
+
+        # Save social media URLs
+        url_count = int(request.POST.get('url_count', 2))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            if url:
+
+                socail_media = SocialMedia(
+                    company_id=id,
+                    url=url
+                )
+                socail_media.save()
+
+        # Save clients
+        client_count = int(request.POST.get('client_count', 2))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            if client_name:
+                
+                client = Client(
+                    company_id=id,
+                    name=client_name
+                )
+                client.save()
+
+        return redirect('admin_dashboard')  # Redirect to a success page
     else:
-        context ={'company': company,'company_profile': company_profile,'products': products
+        context = {
+            'company':company,
+            'company_profile':company_profile,
+            'founders':founders,
+            'clients':clients,
+            'socail_media_urls':socail_media_urls
         }
-        return render(request, 'admin/company_profile.html', context)
-    
+        return render(request, 'admin/update_company.html',context)
 
 
 
-def companyProfileForm(request,id):
+from django.shortcuts import get_object_or_404, redirect, render
+from django.core.exceptions import MultipleObjectsReturned
+
+def updateCompany12(request, id):
+    company = get_object_or_404(Company, company_id=id)
+    company_profile = get_object_or_404(CompanyProfile, company_id=id)
+    founders = Founder.objects.filter(company_id=id)
+    clients = Client.objects.filter(company_id=id)
+    social_media_urls = SocialMedia.objects.filter(company_id=id)
+
+    if request.method == 'POST':
+        # Extract company profile data
+        startup_name = request.POST.get('startup_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video = request.FILES.get('business_introductory_video')
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
+
+        # Update the Company instance
+        company.name = startup_name
+        company.website_url = website_url
+        company.subscription_type = subscription_type
+        company.save()
+
+        # Update the CompanyProfile instance
+        company_profile.sector = sector
+        if business_introductory_video:
+            company_profile.business_introductory_video = business_introductory_video
+        if business_plan:
+            company_profile.business_plan = business_plan
+        company_profile.vision = vision
+        company_profile.mission = mission
+        company_profile.usp = usp
+        company_profile.save()
+
+        # Update founders
+        founder_count = int(request.POST.get('founder_count', founders.count()))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+
+            # if founder_name and linkedin_profile and short_profile and phone_no and email:
+            #     founder_instances = Founder.objects.filter(company_id=id, name=founder_name)
+            #     for founder in founder_instances:
+            #         founder.name = founder_name
+            #         founder.linkedin_url = linkedin_profile
+            #         founder.short_profile = short_profile
+            #         founder.phone_number = phone_no
+            #         founder.email = email
+            #         if photo:
+            #             founder.photo = photo
+            #         founder.save()
+            if founder_name and linkedin_profile and short_profile and phone_no and email:
+                founder_instances = Founder.objects.filter(company_id=id)
+                for founder in founder_instances:
+                    founder.name = founder_name
+                    founder.linkedin_url = linkedin_profile
+                    founder.short_profile = short_profile
+                    founder.phone_number = phone_no
+                    founder.email = email
+                    if photo:
+                        founder.photo = photo
+                    founder.save()
+
+        # Update social media URLs
+        # url_count = int(request.POST.get('url_count', social_media_urls.count()))
+        # for i in range(1, url_count + 1):
+        #     url = request.POST.get(f'url_{i}')
+        #     if url:
+        #         social_media_instances = SocialMedia.objects.filter(company_id=id, url=url)
+        #         for social_media in social_media_instances:
+        #             social_media.url = url
+        #             social_media.save()
+        url_count = int(request.POST.get('url_count', social_media_urls.count()))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            social_media_instances = SocialMedia.objects.filter(company_id=id)
+            for social_media in social_media_instances:
+                        social_media.url = url
+                        social_media.save()
+
+        # Update clients
+        # client_count = int(request.POST.get('client_count', clients.count()))
+        # for i in range(1, client_count + 1):
+        #     client_name = request.POST.get(f'client_{i}')
+        #     if client_name:
+        #         client_instances = Client.objects.filter(company_id=id, name=client_name)
+        #         for client in client_instances:
+        #             client.name = client_name
+        #             client.save()
+        client_count = int(request.POST.get('client_count', clients.count()))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            client_logo = request.FILES.get(f'client_{i}_logo')
+
+            client_instances = Client.objects.filter(company_id=id)
+            for client in client_instances:
+                    client.name = client_name
+                    client.logo = client_logo
+                    client.save()
+
+        return redirect('admin_dashboard')  # Redirect to a success page
+    else:
+        context = {
+            'company': company,
+            'company_profile': company_profile,
+            'founders': founders,
+            'clients': clients,
+            'social_media_urls': social_media_urls
+        }
+        return render(request, 'admin/update_company.html', context)
+
+
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Company, CompanyProfile, Founder, SocialMedia, Client
+
+def updateCompany11(request, id):
+    company = get_object_or_404(Company, company_id=id)
+    company_profile = get_object_or_404(CompanyProfile, company_id=id)
+    founders = Founder.objects.filter(company_id=id)
+    clients = Client.objects.filter(company_id=id)
+    social_media_urls = SocialMedia.objects.filter(company_id=id)
+
+    if request.method == 'POST':
+        # Extract company profile data
+        startup_name = request.POST.get('startup_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video_file = request.FILES.get('business_introductory_video_file')
+        business_introductory_video_url = request.POST.get('business_introductory_video_url')
+
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
+
+        # Update the Company instance
+        company.name = startup_name
+        company.website_url = website_url
+        company.subscription_type = subscription_type
+        company.save()
+
+        # Update the CompanyProfile instance
+        company_profile.sector = sector
+        if business_introductory_video_file:
+            company_profile.business_introductory_video_file = business_introductory_video_file
+        if business_plan:
+            company_profile.business_plan = business_plan
+        company_profile.vision = vision
+        company_profile.mission = mission
+        company_profile.usp = usp
+        company_profile.save()
+
+        # Update founders
+        founder_count = int(request.POST.get('founder_count', founders.count()))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+
+            founder_instances = Founder.objects.filter(company_id=id)
+            for founder in founder_instances:
+                founder.name = founder_name
+                founder.linkedin_url = linkedin_profile
+                founder.short_profile = short_profile
+                founder.phone_number = phone_no
+                founder.email = email
+                if photo:
+                    founder.photo = photo
+                founder.save()
+
+        # Update social media URLs
+        url_count = int(request.POST.get('url_count', social_media_urls.count()))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            social_media_instances = SocialMedia.objects.filter(company_id=id)
+            for social_media in social_media_instances:
+                social_media.url = url
+                social_media.save()
+
+        # Update clients
+        client_count = int(request.POST.get('client_count', clients.count()))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            client_logo = request.FILES.get(f'client_{i}_logo')
+
+            client_instances = Client.objects.filter(company_id=id)
+            for client in client_instances:
+                client.name = client_name
+                if client_logo:
+                    client.logo = client_logo
+                client.save()
+
+        return redirect('admin_dashboard')  # Redirect to a success page
+    else:
+        context = {
+            'company': company,
+            'company_profile': company_profile,
+            'founders': founders,
+            'clients': clients,
+            'social_media_urls': social_media_urls
+        }
+        return render(request, 'admin/update_company.html', context)
+
+
+
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Company, CompanyProfile, Founder, SocialMedia, Client
+
+def updateCompany(request, id):
+    company = get_object_or_404(Company, company_id=id)
+    company_profile = get_object_or_404(CompanyProfile, company_id=id)
+    founders = Founder.objects.filter(company_id=id)
+    clients = Client.objects.filter(company_id=id)
+    social_media_urls = SocialMedia.objects.filter(company_id=id)
+
+    if request.method == 'POST':
+        # Extract company profile data
+        startup_name = request.POST.get('startup_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video_file = request.FILES.get('business_introductory_video_file')
+        business_introductory_video_url = request.POST.get('business_introductory_video_file')
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
+
+        # Update the Company instance
+        company.name = startup_name
+        company.website_url = website_url
+        company.subscription_type = subscription_type
+        company.save()
+
+        # Update the CompanyProfile instance
+        company_profile.sector = sector
+        if business_introductory_video_file:
+            company_profile.business_introductory_video_file = business_introductory_video_file
+        if business_introductory_video_url:
+            company_profile.business_introductory_video_url = business_introductory_video_url
+        if business_plan:
+            company_profile.business_plan = business_plan
+        company_profile.vision = vision
+        company_profile.mission = mission
+        company_profile.usp = usp
+        company_profile.save()
+
+        # Update founders
+        founder_count = int(request.POST.get('founder_count', founders.count()))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+
+            if founder_name and linkedin_profile and short_profile and phone_no and email:
+                if i <= len(founders):
+                    founder = founders[i - 1]
+                    founder.name = founder_name
+                    founder.linkedin_url = linkedin_profile
+                    founder.short_profile = short_profile
+                    founder.phone_number = phone_no
+                    founder.email = email
+                    if photo:
+                        founder.photo = photo
+                    founder.save()
+
+        # Update social media URLs
+        url_count = int(request.POST.get('url_count', social_media_urls.count()))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            if url:
+                if i <= len(social_media_urls):
+                    social_media = social_media_urls[i - 1]
+                    social_media.url = url
+                    social_media.save()
+
+        # Update clients
+        client_count = int(request.POST.get('client_count', clients.count()))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            client_logo = request.FILES.get(f'client_{i}_logo')
+
+            if client_name:
+                if i <= len(clients):
+                    client = clients[i - 1]
+                    client.name = client_name
+                    if client_logo:
+                        client.logo = client_logo
+                    client.save()
+
+        return redirect('admin_dashboard')  # Redirect to a success page
+    else:
+        context = {
+            'company': company,
+            'company_profile': company_profile,
+            'founders': founders,
+            'clients': clients,
+            'social_media_urls': social_media_urls
+        }
+        return render(request, 'admin/update_company.html', context)
+
+
+def companyProfileFormOld(request,id):
     company = get_object_or_404(Company, company_id=id)
 
     # user_context = custom_subuser(request)
@@ -783,14 +1255,6 @@ def companyProfileForm(request,id):
             # if relativedelta(today, date_of_inc_dt).years < 2:
             #     return redirect('financial_statement')
 
-
-            # Products
-            # product_name = request.POST.get('product_name')
-            # products = Product(
-            #     company_id=company,
-            #     product_name = product_name
-            # )
-            # products.save()
             messages.success(request, 'Data saved Successfully')
             return redirect('update_company',id)
     else:
@@ -798,14 +1262,178 @@ def companyProfileForm(request,id):
 
 
 
+
+def companyProfileForm(request,id):
+    #company = get_object_or_404(Company, company_id=id)
+    company = Company.objects.get(company_id = id)
+
+    if request.method == 'POST':
+        # Extract company profile data
+        excecutive_summary = request.POST.get('excecutive_summary')
+        technology_profile = request.POST.get('technology_profile')
+        no_of_employees = request.POST.get('no_of_employees')
+        startup_name = request.POST.get('start_name')
+        sector = request.POST.get('sector')
+        subscription_type = request.POST.get('subscription_type')
+        website_url = request.POST.get('website_url')
+        business_introductory_video = request.FILES.get('business_introductry_video')
+        business_plan = request.FILES.get('business_plan')
+        vision = request.POST.get('vision')
+        mission = request.POST.get('mission')
+        usp = request.POST.get('usp')
+
+        user_context = custom_user(request)
+        current_user = user_context.get('current_user') 
+
+        # Create the Company instance
+        # company = Company(
+        #         user_id=current_user,  # This should match the foreign key field in Company model
+        #         name=startup_name,
+        #         # company_email=company_email,
+        #         website_url=website_url,
+        #         # linkedin_url=linkedin_url,
+        #         subscription_type=subscription_type,
+        #     )
+        # company.save()
+        company_profile = CompanyProfile(
+            company_id = company,
+            excecutive_summary = excecutive_summary,
+            technology_profile = technology_profile,
+            no_of_employees = no_of_employees,
+            sector=sector,
+            business_introductory_video = business_introductory_video,
+            business_plan = business_plan,
+            vision = vision,
+            mission = mission,
+            usp = usp
+        )
+        company_profile.save()
+
+        # Save founders
+        founder_count = int(request.POST.get('founder_count', 1))
+        for i in range(1, founder_count + 1):
+            founder_name = request.POST.get(f'founder{i}_name')
+            linkedin_profile = request.POST.get(f'founder{i}_linkedin_profile')
+            short_profile = request.POST.get(f'founder{i}_short_profile')
+            phone_no = request.POST.get(f'founder{i}_phone_no')
+            email = request.POST.get(f'founder{i}_email')
+            photo = request.FILES.get(f'founder{i}_photo')
+            if founder_name and linkedin_profile and short_profile and phone_no and email and photo:
+                founder = Founder(
+                    company_id=company,
+                    name=founder_name,
+                    linkedin_url=linkedin_profile,
+                    short_profile=short_profile,
+                    phone_number=phone_no,
+                    email=email,
+                    photo=photo
+                )
+                founder.save()
+
+        # Save social media URLs
+        url_count = int(request.POST.get('url_count', 2))
+        for i in range(1, url_count + 1):
+            url = request.POST.get(f'url_{i}')
+            if url:
+
+                socail_media = SocialMedia(
+                    company_id=company,
+                    url=url
+                )
+                socail_media.save()
+
+        # Save clients
+        client_count = int(request.POST.get('client_count', 2))
+        for i in range(1, client_count + 1):
+            client_name = request.POST.get(f'client_{i}')
+            if client_name:
+                
+                client = Client(
+                    company_id=company,
+                    name=client_name
+                )
+                client.save()
+
+
+        return redirect('admin_dashboard')  # Redirect to a success page
+    
+    else:
+        return render(request, 'admin/company_profile_form.html')
+
+
+def companyProfile(request, id):
+    company = get_object_or_404(Company, company_id=id)
+    try:
+        company_profile = CompanyProfile.objects.get(company_id=id)
+    except CompanyProfile.DoesNotExist:
+        company_profile = None
+
+    
+
+    if request.method == 'POST':
+            # Company profile
+            excecutive_summary = request.POST.get('excecutive_summary')
+            technology_profile = request.POST.get('technology_profile')
+            type_of_industry = request.POST.get('type_of_industry')
+            no_of_employees = request.POST.get('no_of_employees')
+            ceo = request.POST.get('ceo')
+            cfo = request.POST.get('cfo')
+            cmo = request.POST.get('cmo')
+            vp = request.POST.get('vp')
+            # Create the CompanyProfile instance and associate it with the Company instance
+            company_profile = CompanyProfile(
+            company_id=company,  # Associate with the newly created Company instancec
+            excecutive_summary=excecutive_summary,
+            technology_profile=technology_profile,
+            type_of_industry=type_of_industry,
+            no_of_employees=no_of_employees,
+            ceo=ceo,
+            cfo=cfo,
+            cmo=cmo,
+            vp=vp
+            )
+            company_profile.save()
+
+            
+            messages.success(request, 'Data saved Successfully')
+            return redirect('comprehensive_profile')
+    else:
+        context = {'company': company,'company_profile': company_profile }
+        return render(request, 'admin/company_profile.html', context)
+    
+
 def comprehensiveProfile(request,id):
     company_profile = CompanyProfile.objects.get(company_id = id)
-    #products = Product.objects.get(company_id = id)
-    #context ={'company_profile': company_profile, 'products': products}
     context ={'company_profile': company_profile}
 
     return render(request, 'admin/comprehensive.html', context)
 
+
+def businessPlan(request, id):
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    context ={'company_profile': company_profile}
+   
+    context = {
+        'company_profile': company_profile,
+    }
+
+    return render(request, 'admin/business_plan.html', context)
+
+def basicInformation(request,id):
+    company = Company.objects.get(company_id = id)
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    founders = Founder.objects.filter(company_id = id)
+    clients = Client.objects.filter(company_id = id)
+
+
+   
+    context = {
+        'company':company,
+        'company_profile': company_profile,
+        'founders':founders,
+        'clients':clients
+    }
+    return render(request,'admin/basic_information.html',context)
 
 def financialStatement(request,id):
     company_profile = CompanyProfile.objects.get(company_id = id)
@@ -862,7 +1490,15 @@ def revenueVerticals(request, company_id):
         return render(request, 'admin/revenue_verticals.html', context)
 
 
-
+def expenses(request,company_id):
+    if request.method == 'POST':
+        pass
+    else:
+        # Handle GET request or any other logic here
+        company_profile = CompanyProfile.objects.get(company_id = company_id)
+        context ={'company_profile': company_profile}
+        return render(request,'admin/expenses.html',context)
+    
 def profitLossBalanceSheetCalculation(request):
     if request.method == 'POST':
         company_id = request.POST.get('company_id')

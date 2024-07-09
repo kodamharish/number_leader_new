@@ -1,11 +1,7 @@
-
-
 {% block content %}
-
-
 {% include './company_profile.html' %}
 <div class="container">
-    <form method="post">
+    <form method="POST" action="#" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row mt-5 mb-5">
             <h4 class="mb-4 text-center">Please Add Company Profile</h4>
@@ -30,7 +26,7 @@
                     <input type="number" class="form-control w-50" name="no_of_employees" required>
                 </div>
 
-                <div class="mb-3 mt-3 inline">
+                <!-- <div class="mb-3 mt-3 inline">
                     <label for="ceo">CEO</label>
                     <input type="text" class="form-control w-50" name="ceo" required>
                 </div>
@@ -45,7 +41,7 @@
                 <div class="mb-3 mt-3 inline">
                     <label for="vp">VP</label>
                     <input type="text" class="form-control w-50" name="vp" required>
-                </div>
+                </div> -->
 
 
                 <!-- <div class="mb-3 mt-3 inline">
@@ -63,11 +59,223 @@
 
 
 
-        <div class="text-center mt-5 mb-3">
+        <!-- <div class="text-center mt-5 mb-3">
             <button type="submit" class="btn btn-secondary border-radius pl pr mb-3">Submit</button>
+        </div> -->
+
+
+
+        <div class="row mt-5 mb-5">
+            <div class="col-md-6">
+                <!-- <div class="mb-3 mt-3 inline">
+                        <label for="start_name">Startup Name</label>
+                        <input type="text" class="form-control w-50" name="start_name" required>
+                    </div> -->
+                <div class="mb-3 mt-3 inline">
+                    <label for="sector">Sector</label>
+                    <input type="text" class="form-control w-50" name="sector" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="business_introductry_video">Business Introductory Video (File)</label>
+                    <input type="file" class="w-50" name="business_introductry_video" required>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="business_plan">Business Plan</label>
+                    <input type="file" class="w-50" name="business_plan" required>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <!-- <div class="mb-3 mt-3 inline">
+                        <label for="website_url">Website URL</label>
+                        <input type="text" class="form-control w-50" name="website_url" required>
+                    </div> -->
+                <div class="mb-3 mt-3 inline">
+                    <label for="subscription_type">Subscription Type</label>
+                    <select class="form-select w-50" id="subscription_type" name="subscription_type" required>
+                        <option value="basic">Basic</option>
+                        <option value="premium">Premium</option>
+                        <option value="advance">Advance</option>
+                    </select>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="business_introductry_video_url">Business Introductory Video (URL)</label>
+                    <input type="url" class="form-control w-50" name="business_introductry_video_url" required>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Founder Details Section -->
+        <div id="founders-section">
+            <div class="row mt-5 mb-5 founder-section">
+                <h4 class="mb-4 text-center">Founder 1 Details</h4>
+                <div class="col-md-6">
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_name">Name</label>
+                        <input type="text" class="form-control w-50" name="founder1_name" required>
+                    </div>
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_linkedin_profile">LinkedIn Profile</label>
+                        <input type="text" class="form-control w-50" name="founder1_linkedin_profile" required>
+                    </div>
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_short_profile">Short Profile</label>
+                        <textarea class="form-control w-50" rows="6" name="founder1_short_profile" required></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_phone_no">Phone Number</label>
+                        <input type="number" class="form-control w-50" name="founder1_phone_no" required>
+                    </div>
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_email">Email ID</label>
+                        <input type="email" class="form-control w-50" name="founder1_email" required>
+                    </div>
+                    <div class="mb-3 mt-3 inline">
+                        <label for="founder1_photo">Professional Photo</label>
+                        <input type="file" class="w-50" name="founder1_photo" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button to Add More Founders -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" id="add-founder-btn">Add Another Founder</button>
+            </div>
+        </div>
+
+        <!-- Vision, Mission, USP Section -->
+        <div class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Vision and Mission</h4>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="vision">Vision</label>
+                    <textarea class="form-control w-50" rows="6" name="vision" required></textarea>
+                </div>
+                <div class="mb-3 mt-3 inline">
+                    <label for="mission">Mission</label>
+                    <textarea class="form-control w-50" rows="6" name="mission"
+                        placeholder="How will you reach the Vision" required></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="usp">USP (Unique Selling Proposition)</label>
+                    <textarea class="form-control w-50" rows="6" name="usp" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Links Section -->
+        <div id="social-media-section" class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Social Media Links</h4>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="url_1">URL 1</label>
+                    <input type="text" class="form-control w-50" name="url_1" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="url_2">URL 2</label>
+                    <input type="text" class="form-control w-50" name="url_2" required>
+                </div>
+            </div>
+
+        </div>
+        <!-- Button to Add More Social Media URLs -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" id="add-url-btn">Add Another URL</button>
+            </div>
+        </div>
+
+        <!-- Client Names Section -->
+        <div id="clients-section" class="row mt-5 mb-5">
+            <h4 class="mb-4 text-center">Client Names</h4>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="client_1">Client 1</label>
+                    <input type="text" class="form-control w-50" name="client_1" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3 inline">
+                    <label for="client_2">Client 2</label>
+                    <input type="text" class="form-control w-50" name="client_2" required>
+                </div>
+            </div>
+
+        </div>
+        <!-- Button to Add More Clients -->
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" id="add-client-btn">Add Another Client</button>
+            </div>
+        </div>
+
+        <input type="hidden" name="founder_count" id="founder_count" value="1">
+        <input type="hidden" name="url_count" id="url_count" value="2">
+        <input type="hidden" name="client_count" id="client_count" value="2">
+        <!-- <button type="submit" class="btn btn-primary">Save</button> -->
+
+        <div class="row mt-5 mb-5">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
         </div>
     </form>
 </div>
+
+
+<script>
+    var founderCount = 1;
+    document.getElementById('add-founder-btn').addEventListener('click', function () {
+        founderCount++;
+        document.getElementById('founder_count').value = founderCount;
+
+        var newFounderSection = document.querySelector('.founder-section').cloneNode(true);
+        newFounderSection.querySelector('h4').textContent = 'Founder ' + founderCount + ' Details';
+        newFounderSection.querySelectorAll('input, textarea').forEach(function (input) {
+            input.name = input.name.replace(/founder\d+/, 'founder' + founderCount);
+            input.value = '';
+        });
+
+        document.getElementById('founders-section').appendChild(newFounderSection);
+    });
+
+    var urlCount = 2;
+    document.getElementById('add-url-btn').addEventListener('click', function () {
+        urlCount++;
+        document.getElementById('url_count').value = urlCount;
+
+        var newUrlInput = document.querySelector('input[name="url_1"]').parentElement.parentElement.cloneNode(true);
+        newUrlInput.querySelector('label').textContent = 'URL ' + urlCount;
+        newUrlInput.querySelector('input').name = 'url_' + urlCount;
+        newUrlInput.querySelector('input').value = '';
+
+        document.getElementById('social-media-section').appendChild(newUrlInput);
+    });
+
+    var clientCount = 2;
+    document.getElementById('add-client-btn').addEventListener('click', function () {
+        clientCount++;
+        document.getElementById('client_count').value = clientCount;
+
+        var newClientInput = document.querySelector('input[name="client_1"]').parentElement.parentElement.cloneNode(true);
+        newClientInput.querySelector('label').textContent = 'Client ' + clientCount;
+        newClientInput.querySelector('input').name = 'client_' + clientCount;
+        newClientInput.querySelector('input').value = '';
+
+        document.getElementById('clients-section').appendChild(newClientInput);
+    });
+</script>
 
 
 

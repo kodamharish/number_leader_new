@@ -8,19 +8,14 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('company_id','user_id','company_name')
+    list_display = ('company_id','user_id','name')
     list_display_links = ('company_id',)  
 admin.site.register(Company, CompanyAdmin)
 
 class CompanyProfileAdmin(admin.ModelAdmin):
-    list_display = ('company_id','ceo')
+    list_display = ('company_id','sector')
     list_display_links = ('company_id',)  
 admin.site.register(CompanyProfile, CompanyProfileAdmin)
-
-# class ProductsAdmin(admin.ModelAdmin):
-#     list_display = ('company_id','product_name')
-#     list_display_links = ('company_id',)  
-# admin.site.register(Product, ProductsAdmin)
 
 
 class TeamAdmin(admin.ModelAdmin):
@@ -28,8 +23,28 @@ class TeamAdmin(admin.ModelAdmin):
     list_display_links = ('company_id',)  
 admin.site.register(Team, TeamAdmin)
 
-admin.site.register(NewsOfIndustry)
-admin.site.register(NewsOfInvestment)
-admin.site.register(ProfitLossBalanceSheet)
+class FounderAdmin(admin.ModelAdmin):
+    list_display = ('company_id','id')
+    list_display_links = ('company_id',)  
+admin.site.register(Founder, FounderAdmin)
+
+class SocialMediaAdmin(admin.ModelAdmin):
+    list_display = ('company_id','url')
+    list_display_links = ('company_id',)  
+admin.site.register(SocialMedia, SocialMediaAdmin)
+
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('company_id','name')
+    list_display_links = ('company_id',)  
+admin.site.register(Client, ClientAdmin)
+
+
+
 admin.site.register(HomogenousProduct)
 admin.site.register(HeterogenousProduct)
+admin.site.register(CompanyRevenue)
+
+#later use
+#admin.site.register(NewsOfIndustry)
+#admin.site.register(NewsOfInvestment)
+#admin.site.register(ProfitLossBalanceSheet)

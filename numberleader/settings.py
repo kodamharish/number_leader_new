@@ -89,6 +89,18 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'numberleader',
+#         'USER' : 'root',
+#         'PASSWORD' : 'root',
+#         'HOST' : 'localhost',
+#         'PORT' : 3306,
+#     }
+    
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -130,6 +142,8 @@ STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'static')
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static','media')
+MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

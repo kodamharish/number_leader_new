@@ -26,7 +26,7 @@ class User(models.Model):
     linkedin_url = models.URLField(null=True)
     firstname = models.CharField(max_length=50,null=False)
     lastname = models.CharField(max_length=50,null=True)
-    password = models.CharField(max_length=150,null=False)  
+    password = models.CharField(max_length=10,null=False)  
     user_type = models.CharField(max_length=12,default='admin')
     company_type = models.CharField(max_length=20)
     
@@ -49,12 +49,17 @@ class Company(models.Model):
     # Company Details
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     company_id = models.CharField(max_length=10,primary_key=True , editable=False)
-    name = models.CharField(max_length=100,null=True)
-    email = models.EmailField(null=True)
-    website_url = models.URLField(null=True)
-    linkedin_url = models.URLField(null=True)
+    company_name = models.CharField(max_length=100,null=True)
+    company_email = models.EmailField(null=True)
+    company_website_url = models.URLField(null=True)
+    company_linkedin_url = models.URLField(null=True)
     subscription_type = models.CharField(max_length=20,null=True)
-
+    # Founders Details
+    founder_name = models.CharField(max_length=100,null=True)
+    founder_email = models.EmailField(null=True)
+    founder_linkedin_url = models.URLField(null=True)
+    founder_phone_number = models.IntegerField(null=True)
+    
     def save(self, *args, **kwargs):
         if not self.company_id:
             company_sequence, created = CompanyIDSequence.objects.get_or_create(pk=1)
@@ -64,44 +69,28 @@ class Company(models.Model):
         super(Company, self).save(*args, **kwargs)
     def __str__(self):
         return self.company_id
+    
 
 class CompanyProfile(models.Model):
     company_id = models.ForeignKey(Company,on_delete=models.CASCADE)
-    excecutive_summary = models.TextField(null=True)
+    excecutive_summary = models.TextField()
     technology_profile=models.TextField(null=True)
-    sector = models.CharField(max_length=50)
-    no_of_employees = models.IntegerField(null=True)
-    business_introductory_video_file = models.FileField(upload_to='business_introductory',null=True)
-    business_introductory_video_url = models.URLField(null=True)
-    business_plan = models.FileField(upload_to='business_plan',null=True)
-    vision=models.TextField()
-    mission=models.TextField()
-    usp=models.TextField()
+    type_of_industry = models.CharField(max_length=50)
+    no_of_employees = models.IntegerField()
+    ceo = models.CharField(max_length=100)
+    cfo = models.CharField(max_length=100)
+    cmo = models.CharField(max_length=100)
+    vp = models.CharField(max_length=100)
     date_of_incorporation = models.DateField(null= True)
-    # def __str__(self):
-    #     return self.company_id
 
-class Founder(models.Model):
-    company_id=models.ForeignKey(Company, on_delete=models.CASCADE,related_name='founders')
-    name=models.CharField(max_length=50)
-    linkedin_url=models.URLField()
-    short_profile=models.TextField(null=True)
-    photo=models.ImageField(upload_to='photos',null=True)
-    phone_number=models.IntegerField()
-    email=models.EmailField()
+class Product(models.Model):
+    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
+    product_name=models.CharField(max_length=250, null=True)
 
-class SocialMedia(models.Model):
-    company_id=models.ForeignKey(Company,on_delete=models.CASCADE,related_name='social_media')
-    #name=models.CharField(max_length=25)
-    url=models.URLField()
-
-class Client(models.Model):
-    company_id=models.ForeignKey(Company, on_delete=models.CASCADE,related_name='clients')
-    name=models.CharField(max_length=25)
-    logo=models.ImageField(upload_to='clients_logo',null=True)
-
-
-
+class NewsOfIndustry(models.Model):
+    pass
+class NewsOfInvestment(models.Model):
+    pass
 
 
 
@@ -132,6 +121,58 @@ class Team(models.Model):
     def __str__(self):
         return self.subuser_id
 
+
+
+#Profit Loss Balance Sheet
+class ProfitLossBalanceSheet(models.Model):
+    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
+    #income
+    revenue_recurring = models.FloatField()
+    revenue_one_time = models.FloatField()
+    other_income = models.FloatField()
+    total_income = models.FloatField()
+    #expenses
+    cost_of_materials_consumed = models.FloatField()
+    changes_inventories_of_fg_wip = models.FloatField()
+    emp_benefits_expenses = models.FloatField()
+    depreciation_amortization_expenses = models.FloatField()
+    finance_cost = models.FloatField()
+    other_expenses = models.FloatField()
+    total_expenses = models.FloatField()
+    #tax
+    profit_before_tax = models.FloatField()
+    current_tax_expense = models.FloatField()
+    deferred_tax = models.FloatField()
+    profit_after_tax = models.FloatField()
+
+
+
+
+
+
+
+# class HomogenousProduct(models.Model):
+#     company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+#     product_name = models.CharField(max_length=100)
+#     selling_price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
+#     units_sold = models.IntegerField()
+#     expected_growth_rate = models.IntegerField()
+#     revenue_from_product = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    
+
+#     def save(self, *args, **kwargs):
+#         # Convert selling_price_per_unit and units_sold to appropriate types if necessary
+#         if isinstance(self.selling_price_per_unit, str):
+#             self.selling_price_per_unit = float(self.selling_price_per_unit)
+#         if isinstance(self.units_sold, str):
+#             self.units_sold = int(self.units_sold)
+        
+#         self.revenue_from_product = self.selling_price_per_unit * self.units_sold 
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.product_name  # or any other string field that represents the product
+    
 
 
 
@@ -188,35 +229,4 @@ class CompanyRevenue(models.Model):
 
 
 
-
-
-
-
-# later use
-
-class NewsOfIndustry(models.Model):
-    pass
-class NewsOfInvestment(models.Model):
-    pass
-
-#Profit Loss Balance Sheet
-class ProfitLossBalanceSheet(models.Model):
-    company_id=models.ForeignKey(Company,on_delete=models.CASCADE)
-    #income
-    revenue_recurring = models.FloatField()
-    revenue_one_time = models.FloatField()
-    other_income = models.FloatField()
-    total_income = models.FloatField()
-    #expenses
-    cost_of_materials_consumed = models.FloatField()
-    changes_inventories_of_fg_wip = models.FloatField()
-    emp_benefits_expenses = models.FloatField()
-    depreciation_amortization_expenses = models.FloatField()
-    finance_cost = models.FloatField()
-    other_expenses = models.FloatField()
-    total_expenses = models.FloatField()
-    #tax
-    profit_before_tax = models.FloatField()
-    current_tax_expense = models.FloatField()
-    deferred_tax = models.FloatField()
-    profit_after_tax = models.FloatField()
+    

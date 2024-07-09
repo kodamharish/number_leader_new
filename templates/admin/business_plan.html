@@ -1,0 +1,24 @@
+{% load static %}
+{% block content %}
+<style>
+    .main-content {
+        margin-left: 290px;
+        /* Adjust according to sidebar width */
+        padding: 40px;
+        /* Reduce padding for a cleaner look */
+        transition: margin-left 0.3s;
+        /* Smooth transition for sidebar width changes */
+    }
+</style>
+{% include './company_profile.html' %}
+<div class="main-content">
+    
+    <embed src="{% static company_profile.business_plan.url %}" width="100%" height="600px" type="application/pdf">
+    
+
+<!-- your_template.html -->
+
+<!-- <img src="{% static company_profile.business_plan.url %}" alt="Your Image" width="50%" height="600px"> -->
+
+</div>
+{% endblock %}
