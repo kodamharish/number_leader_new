@@ -41,8 +41,12 @@ urlpatterns = [
     path('company_profile/<str:id>/',companyProfile,name='company_profile'),
     path('company_profile_form/<str:id>/',companyProfileForm,name='company_profile_form'),
 
-    path('business_plan/<str:id>/',businessPlan,name='business_plan'),
     path('basic_information/<str:id>/',basicInformation,name='basic_information'),
+    path('business_plan/<str:id>/',businessPlan,name='business_plan'),
+    path('cap_table/<str:id>/',capTable,name='cap_table'),
+    path('cap_table_form/<str:id>/',capTableForm,name='cap_table_form'),
+
+
 
 
 

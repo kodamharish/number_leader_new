@@ -1276,7 +1276,9 @@ def companyProfileForm(request,id):
         sector = request.POST.get('sector')
         subscription_type = request.POST.get('subscription_type')
         website_url = request.POST.get('website_url')
-        business_introductory_video = request.FILES.get('business_introductry_video')
+        business_introductory_video_file = request.FILES.get('business_introductry_video_file')
+        business_introductory_video_url = request.POST.get('business_introductry_video_url')
+
         business_plan = request.FILES.get('business_plan')
         vision = request.POST.get('vision')
         mission = request.POST.get('mission')
@@ -1301,7 +1303,9 @@ def companyProfileForm(request,id):
             technology_profile = technology_profile,
             no_of_employees = no_of_employees,
             sector=sector,
-            business_introductory_video = business_introductory_video,
+            business_introductory_video_file = business_introductory_video_file,
+            business_introductory_video_url = business_introductory_video_url,
+
             business_plan = business_plan,
             vision = vision,
             mission = mission,
@@ -1343,16 +1347,18 @@ def companyProfileForm(request,id):
                 socail_media.save()
 
         # Save clients
-        client_count = int(request.POST.get('client_count', 2))
+        client_count = int(request.POST.get('client_count', 1))
         for i in range(1, client_count + 1):
             client_name = request.POST.get(f'client_{i}')
-            if client_name:
-                
+            client_logo = request.FILES.get(f'client_{i}_logo')
+            if client_name and client_logo:
                 client = Client(
                     company_id=company,
-                    name=client_name
+                    name=client_name,
+                    logo=client_logo
                 )
                 client.save()
+
 
 
         return redirect('admin_dashboard')  # Redirect to a success page
@@ -1409,15 +1415,6 @@ def comprehensiveProfile(request,id):
     return render(request, 'admin/comprehensive.html', context)
 
 
-def businessPlan(request, id):
-    company_profile = CompanyProfile.objects.get(company_id = id)
-    context ={'company_profile': company_profile}
-   
-    context = {
-        'company_profile': company_profile,
-    }
-
-    return render(request, 'admin/business_plan.html', context)
 
 def basicInformation(request,id):
     company = Company.objects.get(company_id = id)
@@ -1434,6 +1431,58 @@ def basicInformation(request,id):
         'clients':clients
     }
     return render(request,'admin/basic_information.html',context)
+
+def businessPlan(request, id):
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    
+   
+    context = {
+        'company_profile': company_profile,
+    }
+
+    return render(request, 'admin/business_plan.html', context)
+
+def capTable(request, id):
+    company_profile = CompanyProfile.objects.get(company_id = id)
+    cap_table = CapTable.objects.filter(company_id = id)
+    context = {'company_profile': company_profile,'cap_table': cap_table }
+   
+
+    return render(request, 'admin/cap_table.html', context)
+
+def capTableForm(request, id):
+    company = Company.objects.get(company_id = id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        linkedin_url = request.POST.get('linkedin_url')
+        percentage_of_shares = request.POST.get('percentage_of_shares')
+        photo = request.FILES.get('photo')
+
+        cap_table = CapTable(
+            company_id = company,
+            name = name,
+            email = email,
+            linkedin_url = linkedin_url,
+            percentage_of_shares = percentage_of_shares,
+            photo = photo
+        )
+        cap_table.save()
+        messages.success(request,'Data saved successfully')
+        return redirect('cap_table',company.company_id)
+
+    else:
+        company_profile = CompanyProfile.objects.get(company_id = id)
+        context ={'company_profile': company_profile}
+    
+        context = {
+            'company_profile': company_profile,
+        }
+
+        return render(request, 'admin/cap_table_form.html', context)
+
+
 
 def financialStatement(request,id):
     company_profile = CompanyProfile.objects.get(company_id = id)

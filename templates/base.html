@@ -110,19 +110,35 @@
                 {% endfor %}
               {% endif %}
               <li><a class="dropdown-item" href="{% url 'add_company' %}">Add</a></li>
-            </ul>
-
-            
-            
-            
+            </ul>          
           </li>
+
+          {% if current_user.company_type == 'startup' %}
           <li class="nav-item">
             <a class="nav-link" href="#">Investor</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"> Enablers</a> <!-- ca firm -->
-            
+            <a class="nav-link" href="#"> Enablers</a> <!-- ca firm -->  
           </li>
+          {% endif %}
+
+          {% if current_user.company_type == 'investor' %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Startup</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> Enablers</a> <!-- ca firm -->  
+          </li>
+          {% endif %}
+
+          {% if current_user.company_type == 'enabler' %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Startup</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Investor</a> <!-- ca firm -->  
+          </li>
+          {% endif %}
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">My Team</a>
             <ul class="dropdown-menu">
@@ -247,7 +263,7 @@
                 </p>
                 <p>
                   {% if current_user %}
-                    {{ current_user.company_type }}
+                    {{ current_user.company_type|title}}
                   {% elif current_subuser %}
                     {{ current_user.company_type }}
                   {% endif %}

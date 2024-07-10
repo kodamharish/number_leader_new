@@ -39,7 +39,7 @@ class ClientAdmin(admin.ModelAdmin):
 admin.site.register(Client, ClientAdmin)
 
 
-
+admin.site.register(CapTable)
 admin.site.register(HomogenousProduct)
 admin.site.register(HeterogenousProduct)
 admin.site.register(CompanyRevenue)

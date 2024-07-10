@@ -100,6 +100,15 @@ class Client(models.Model):
     name=models.CharField(max_length=25)
     logo=models.ImageField(upload_to='clients_logo',null=True)
 
+class CapTable(models.Model):
+    company_id=models.ForeignKey(Company, on_delete=models.CASCADE,related_name='cap_table')
+    name = models.CharField(max_length=200)
+    email= models.EmailField()
+    linkedin_url=models.URLField()
+    photo = models.ImageField(upload_to='photos',null=True)
+    percentage_of_shares= models.DecimalField(max_digits=5,decimal_places=2)
+
+
 
 
 
